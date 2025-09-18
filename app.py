@@ -49,15 +49,22 @@ def get_context_snippet(question):
     matches = []
     question_words = question.lower().split()
     
+    # Daha geniş arama yap
+    search_terms = question_words + ["implant", "kırık", "fracture", "complication", "problem", "nobel", "iti", "misch"]
+    
     for entry in all_data:
         try:
             text = json.dumps(entry, ensure_ascii=False).lower()
-            if any(word in text for word in question_words):
+            if any(term in text for term in search_terms):
                 matches.append(json.dumps(entry, ensure_ascii=False))
         except Exception as e:
             continue
     
-    return "\n".join(matches[:20])  # Daha fazla context
+    # Eğer hiç match yoksa, tüm verilerden bir kısmını al
+    if not matches:
+        matches = [json.dumps(entry, ensure_ascii=False) for entry in all_data[:10]]
+    
+    return "\n".join(matches[:20])
 
 @app.route("/", methods=["GET", "POST"])
 def index():
