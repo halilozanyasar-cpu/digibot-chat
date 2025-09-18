@@ -1,6 +1,6 @@
 cat > app.py << 'EOF'
 from flask import Flask, request, render_template
-from openai import OpenAI
+import openai
 import json
 import os
 from datetime import datetime
@@ -10,12 +10,12 @@ app = Flask(__name__)
 
 # --- API KEY .env'den alınıyor ---
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # --- Maliyet Hesaplama ---
 def estimate_cost(input_tokens, output_tokens, model="gpt-4o-mini"):
     pricing = {
-        "gpt-4o-mini": {"input": 0.0005, "output": 0.0015},  # deneme için en ucuz
+        "gpt-4o-mini": {"input": 0.0005, "output": 0.0015},
         "gpt-4o": {"input": 0.005, "output": 0.015},
         "gpt-4-turbo": {"input": 0.01, "output": 0.03},
     }
@@ -80,8 +80,8 @@ def index():
         {user_question}
         """
 
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",  # ✅ deneme için ideal
+        response = openai.ChatCompletion.create(
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt}
