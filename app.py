@@ -1,3 +1,4 @@
+cat > app.py << 'EOF'
 from flask import Flask, request, render_template
 from openai import OpenAI
 import json
@@ -104,3 +105,4 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
+EOF
