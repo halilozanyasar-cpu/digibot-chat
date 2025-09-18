@@ -28,40 +28,55 @@ def load_all_data():
     data_folder = "data"
     if not os.path.exists(data_folder):
         return combined
+    
+    print(f"Data folder exists: {os.path.exists(data_folder)}")
+    print(f"Files in data folder: {os.listdir(data_folder)}")
+    
     for filename in os.listdir(data_folder):
         if filename.endswith(".json"):
             try:
-                with open(os.path.join(data_folder, filename), "r", encoding="utf-8") as f:
+                filepath = os.path.join(data_folder, filename)
+                print(f"Loading file: {filename}")
+                with open(filepath, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     if isinstance(data, list):
                         combined.extend(data)
+                        print(f"Added {len(data)} entries from {filename}")
                     else:
                         combined.append(data)
+                        print(f"Added 1 entry from {filename}")
             except Exception as e:
                 print(f"Error loading {filename}: {e}")
                 continue
+    
+    print(f"Total loaded entries: {len(combined)}")
     return combined
 
 all_data = load_all_data()
-print(f"Loaded {len(all_data)} data entries")
 
 def get_context_snippet(question):
     matches = []
     question_words = question.lower().split()
     
-    # Daha geniş arama yap
-    search_terms = question_words + ["implant", "kırık", "fracture", "complication", "problem", "nobel", "iti", "misch"]
+    print(f"Searching for: {question_words}")
     
-    for entry in all_data:
+    # Daha geniş arama yap
+    search_terms = question_words + ["implant", "kırık", "fracture", "complication", "problem", "nobel", "iti", "misch", "broken", "crack"]
+    
+    for i, entry in enumerate(all_data):
         try:
             text = json.dumps(entry, ensure_ascii=False).lower()
             if any(term in text for term in search_terms):
                 matches.append(json.dumps(entry, ensure_ascii=False))
+                print(f"Match found in entry {i}")
         except Exception as e:
             continue
     
+    print(f"Found {len(matches)} matches")
+    
     # Eğer hiç match yoksa, tüm verilerden bir kısmını al
     if not matches:
+        print("No matches found, using first 10 entries")
         matches = [json.dumps(entry, ensure_ascii=False) for entry in all_data[:10]]
     
     return "\n".join(matches[:20])
@@ -71,7 +86,10 @@ def index():
     answer = ""
     if request.method == "POST":
         user_question = request.form["question"]
+        print(f"Question received: {user_question}")
+        
         context = get_context_snippet(user_question)
+        print(f"Context length: {len(context)}")
 
         # --- System prompt (Digibot kuralları) ---
         system_prompt = """Sen Digibot adında bir klinik asistanısın. Vaka bazlı cerrahi implant rehberlerinde hekime karar desteği sunarsın. 
