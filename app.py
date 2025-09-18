@@ -57,7 +57,7 @@ def get_context_snippet(question):
         except Exception as e:
             continue
     
-    return "\n".join(matches[:10])  # Daha fazla context
+    return "\n".join(matches[:20])  # Daha fazla context
 
 @app.route("/", methods=["GET", "POST"])
 def index():
