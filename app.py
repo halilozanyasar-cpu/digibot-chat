@@ -14,7 +14,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # --- Maliyet Hesaplama ---
 def estimate_cost(input_tokens, output_tokens, model="gpt-4o-mini"):
     pricing = {
-        "gpt-4o-mini": {"input": 0.0005, "output": 0.0015},  # deneme için en ucuz
+        "gpt-4o-mini": {"input": 0.0005, "output": 0.0015},
         "gpt-4o": {"input": 0.005, "output": 0.015},
         "gpt-4-turbo": {"input": 0.01, "output": 0.03},
     }
@@ -30,20 +30,34 @@ def load_all_data():
         return combined
     for filename in os.listdir(data_folder):
         if filename.endswith(".json"):
-            with open(os.path.join(data_folder, filename), "r", encoding="utf-8") as f:
-                data = json.load(f)
-                combined.extend(data if isinstance(data, list) else [data])
+            try:
+                with open(os.path.join(data_folder, filename), "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    if isinstance(data, list):
+                        combined.extend(data)
+                    else:
+                        combined.append(data)
+            except Exception as e:
+                print(f"Error loading {filename}: {e}")
+                continue
     return combined
 
 all_data = load_all_data()
+print(f"Loaded {len(all_data)} data entries")
 
 def get_context_snippet(question):
     matches = []
+    question_words = question.lower().split()
+    
     for entry in all_data:
-        text = json.dumps(entry, ensure_ascii=False)
-        if any(word.lower() in text.lower() for word in question.split()):
-            matches.append(text)
-    return "\n".join(matches[:5])
+        try:
+            text = json.dumps(entry, ensure_ascii=False).lower()
+            if any(word in text for word in question_words):
+                matches.append(json.dumps(entry, ensure_ascii=False))
+        except Exception as e:
+            continue
+    
+    return "\n".join(matches[:10])  # Daha fazla context
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -72,15 +86,17 @@ def index():
         Dil: Sade, pratik, klinik. Panik anında bile kısa ve uygulanabilir öneriler sunarsın."""
 
         # --- User prompt ---
-        prompt = f"""Bilgi:
+        prompt = f"""Aşağıdaki literatür arşivinden sadece ilgili bilgileri kullanarak yanıt ver:
+
+        LİTERATÜR ARŞİVİ:
         {context}
 
-        Soru:
-        {user_question}
-        """
+        SORU: {user_question}
+
+        Yukarıdaki literatür arşivinden sadece ilgili bilgileri kullanarak yanıt ver. Eğer arşivde ilgili bilgi yoksa, "Bu konuda arşivimizde yeterli bilgi bulunmamaktadır." de."""
 
         response = openai.ChatCompletion.create(
-            model="gpt-4o-mini",  # ✅ deneme için ideal
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt}
