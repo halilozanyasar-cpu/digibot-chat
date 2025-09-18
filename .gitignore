@@ -1,3 +1,6 @@
 .env
 *.env
 logs.txt
+.env
+*.env
+logs.txt
