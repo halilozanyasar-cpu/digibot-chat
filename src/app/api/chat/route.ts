@@ -166,17 +166,64 @@ export async function POST(request: NextRequest) {
     // İlgili context'i bul - implant kırılması için özel arama
     let relevantContext = '';
     
-    // İmplant kırılması için özel arama
-    if (message.toLowerCase().includes('kırıl') || message.toLowerCase().includes('kırık') || message.toLowerCase().includes('fracture')) {
+    // Akıllı arama - tüm komplikasyonlar ve teknik sorular için
+    const messageLower = message.toLowerCase();
+    
+    // Komplikasyon anahtar kelimeleri
+    const complicationKeywords = [
+      'kırıl', 'kırık', 'fracture', 'broken', 'break',
+      'sıkış', 'stuck', 'sıkıştı', 'sıkışma',
+      'kanama', 'bleeding', 'hemorrhage',
+      'yetersiz', 'insufficient', 'lack', 'eksik',
+      'başarısız', 'failed', 'failure', 'fail',
+      'problem', 'complication', 'issue', 'sorun',
+      'ağrı', 'pain', 'ache', 'hurt',
+      'iltihap', 'inflammation', 'infection',
+      'mobil', 'loose', 'gevşek', 'mobility',
+      'retreat', 'çek', 'remove', 'kaldır'
+    ];
+    
+    // Teknik soru anahtar kelimeleri
+    const technicalKeywords = [
+      'protokol', 'protocol', 'drill', 'frez', 'delme',
+      'implant', 'yerleştir', 'place', 'insert',
+      'kemik', 'bone', 'osteotomy', 'osteotomi',
+      'anestezi', 'anesthesia', 'local', 'lokal',
+      'sutur', 'suture', 'dikiş', 'stitch',
+      'planlama', 'planning', 'plan', 'planla',
+      'ölçü', 'measure', 'measurement', 'ölçüm',
+      'şablon', 'template', 'guide', 'rehber',
+      'steril', 'sterile', 'sterilization', 'sterilizasyon'
+    ];
+    
+    // Anahtar kelime kontrolü
+    const hasComplication = complicationKeywords.some(keyword => messageLower.includes(keyword));
+    const hasTechnical = technicalKeywords.some(keyword => messageLower.includes(keyword));
+    
+    if (hasComplication || hasTechnical) {
+      // Komplikasyon ve teknik sorular için özel arama
       for (const item of allData) {
         const itemStr = JSON.stringify(item).toLowerCase();
-        if (itemStr.includes('fracture') || itemStr.includes('kırıl') || itemStr.includes('kırık') || 
-            itemStr.includes('complication') || itemStr.includes('failure') || itemStr.includes('problem')) {
-          relevantContext += JSON.stringify(item) + '\n\n';
+        
+        // Komplikasyon arama
+        if (hasComplication) {
+          const hasComplicationData = complicationKeywords.some(keyword => itemStr.includes(keyword));
+          if (hasComplicationData) {
+            relevantContext += JSON.stringify(item) + '\n\n';
+            continue;
+          }
+        }
+        
+        // Teknik soru arama
+        if (hasTechnical) {
+          const hasTechnicalData = technicalKeywords.some(keyword => itemStr.includes(keyword));
+          if (hasTechnicalData) {
+            relevantContext += JSON.stringify(item) + '\n\n';
+          }
         }
       }
     } else {
-      // Normal arama
+      // Normal arama - genel sorular için
       relevantContext = getContextSnippet(message, allData);
     }
     
