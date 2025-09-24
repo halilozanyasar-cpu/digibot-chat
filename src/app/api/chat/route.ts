@@ -56,13 +56,19 @@ function loadAllData(): any[] {
           if (typeof item === 'object' && item !== null) {
             const formatted: any = { ...item }; // Orijinal veriyi koru
             
-            // Sadece kritik anahtarlar için Türkçe ekle
+            // Kritik anahtarlar için Türkçe ekle
             if (item.Title) formatted['Başlık'] = item.Title;
             if (item.Content) formatted['İçerik'] = item.Content;
             if (item.Authors) formatted['Yazarlar'] = item.Authors;
             if (item.Journal) formatted['Dergi'] = item.Journal;
             if (item['Main Outcome']) formatted['Ana Bulgular'] = item['Main Outcome'];
             if (item.Conclusion) formatted['Sonuç'] = item.Conclusion;
+            
+            // Frez protokolü için kritik anahtarlar
+            if (item.Firma) formatted['Company'] = item.Firma;
+            if (item.Sistem) formatted['System'] = item.Sistem;
+            if (item.Drill) formatted['Frez'] = item.Drill;
+            if (item.Year) formatted['Yıl'] = item.Year;
             
             return formatted;
           }
