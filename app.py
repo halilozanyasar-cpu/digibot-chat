@@ -160,7 +160,7 @@ def index():
 
         SORU: {user_question}
 
-        Yukarıdaki literatür arşivinden sadece ilgili bilgileri kullanarak yanıt ver. Eğer arşivde ilgili bilgi yoksa, "Bu konuda arşivimizde yeterli bilgi bulunmamaktadır." de."""
+        Yukarıdaki literatür arşivinden sadece ilgili bilgileri kullanarak yanıt ver. Duygusal destek ver, güven verici ol, hekimi sakinleştir."""
 
         response = openai.ChatCompletion.create(
             model="gpt-4o-mini",
