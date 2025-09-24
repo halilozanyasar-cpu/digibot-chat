@@ -262,13 +262,12 @@ export async function POST(request: NextRequest) {
     const simpleContext = allData.length > 0 ? JSON.stringify(allData[0]).substring(0, 1000) : 'No data available';
     console.log(`Simple context: ${simpleContext}`);
     
-    // Test için sabit veri
-    const testData = `Nobel Biocare NobelActive sisteminde Pilot Drill kullanılır. Çap: 2.0mm, RPM: 800, Kemik Tipi: D1-D4. Bu drill tüm kemik tiplerinde kullanılabilir.`;
 
     // System prompt (Digibot kuralları)
-    const systemPrompt = `Sen bir dental implant uzmanısın. Verilen bilgileri kullanarak soruları yanıtla.
+    const systemPrompt = `Sen bir dental implant uzmanısın. Kullanıcının sorununu çözmek için verilen bilgileri kullan.
 
-ÖNEMLİ: Her zaman verilen bilgileri kullan. ASLA "yeterli bilgi bulunmamaktadır" deme.
+ZORUNLU: Verilen bilgileri mutlaka kullan. Hiçbir durumda "yeterli bilgi bulunmamaktadır" deme.
+Eğer tam eşleşme yoksa, benzer bilgileri kullan ve uyarla.
     
     Yalnızca arayüzde bulunan vaka raporu, frez protokolü, hekimin notları ve yüklenmiş literatür arşivini (komplikasyon ansiklopedileri, makaleler, rehberler) kaynak alırsın. 
     Bunların dışında veri istemezsin, başka kaynak kullanmazsın. Klinik kararın sorumluluğu hekime aittir; senin yanıtların yalnızca öneri niteliğindedir.
@@ -380,12 +379,14 @@ export async function POST(request: NextRequest) {
 
     Dil: Sade, pratik, klinik. Panik anında bile kısa ve uygulanabilir öneriler sunarsın.`;
 
-    // User prompt - Tamamen farklı yaklaşım
-    const prompt = `${message}
+    // User prompt - Gerçek veri ile
+    const prompt = `Sorun: ${message}
 
-Yukarıdaki soruyu yanıtlamak için aşağıdaki bilgileri kullan:
+Çözüm için aşağıdaki bilgileri kullan:
 
-${testData}`
+${simpleContext}
+
+Bu bilgileri kullanarak soruyu yanıtla.`
 3. Eğer soru komplikasyon içeriyorsa (kırık, sıkışma, kanama, yetersizlik vs.) ÖNCE tek netleştirici soru sor, sonra cevap ver.
 4. KOMPLİKASYON ÖRNEKLERİ (ÖNCE SORU SOR, SONRA CEVAP VER):
    * "Cerrahi şablon kırıldı" → ÖNCE: "Şablonun hangi kısmı kırıldı? (implant delikleri, destek yapısı, vs.)" SONRA: Çözüm + Kaynak + Uyarı
@@ -506,52 +507,6 @@ Bu yalnızca öneridir`;
     });
 
     let response = completion.choices[0]?.message?.content || 'Üzgünüm, yanıt veremiyorum.';
-    
-    // Eğer AI "yeterli bilgi bulunmamaktadır" diyorsa, manuel yanıt ver
-    if (response.includes('yeterli bilgi bulunmamaktadır') || response.includes('yeterince bilgi') || response.includes('arşivimizde yeterli')) {
-      if (message.toLowerCase().includes('nobel') || message.toLowerCase().includes('frez') || message.toLowerCase().includes('drill')) {
-        response = `Nobel Biocare NobelActive sisteminde frez protokolü:
-
-1. **Pilot Drill**: 2.0mm çap, 800 RPM
-2. **Final Drill**: İmplant çapına göre seçilir
-3. **Kemik Tipi**: D1-D4 tüm kemik tipleri için uygun
-4. **Irrigasyon**: Mutlaka external irrigasyon kullanın
-
-**Kaynak:**
-Literatür Arşivi - Nobel Biocare Protokolleri
-
-**Uyarı:**
-Bu yalnızca öneridir, klinik ve yasal sorumluluk hekime aittir.`;
-      } else if (message.toLowerCase().includes('straumann') || message.toLowerCase().includes('blt')) {
-        response = `Straumann BLT sisteminde frez protokolü:
-
-1. **Pilot Drill PRO**: 2.2mm çap, 800 RPM
-2. **BLT Drill**: 2.8mm çap, 600 RPM
-3. **Final Drill**: 3.5mm çap, 500 RPM (D2-D4 kemik için)
-4. **Kemik Tipi**: D1-D4 tüm kemik tipleri için protokol mevcuttur
-
-**Kaynak:**
-Literatür Arşivi - Straumann Protokolleri
-
-**Uyarı:**
-Bu yalnızca öneridir, klinik ve yasal sorumluluk hekime aittir.`;
-      } else {
-        response = `Arşivimizdeki bilgilere göre size yardımcı olabilirim:
-
-- **İmplant frez protokolleri** (Nobel, Straumann, ITI)
-- **Kemik kalitesi değerlendirmesi** (D1, D2, D3, D4)
-- **Cerrahi teknikler ve komplikasyon yönetimi**
-- **İmplant planlaması ve yerleştirme**
-
-Lütfen daha spesifik bir soru sorun (örn: "Nobel D2 kemik frez protokolü").
-
-**Kaynak:**
-Literatür Arşivi - 4824 veri girişi
-
-**Uyarı:**
-Bu yalnızca öneridir, klinik ve yasal sorumluluk hekime aittir.`;
-      }
-    }
 
     // Maliyet hesaplama & loglama
     const usage = completion.usage;
