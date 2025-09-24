@@ -232,33 +232,46 @@ export async function POST(request: NextRequest) {
            console.log(`Context length: ${context.length}`);
            console.log(`First 500 chars of context: ${context.substring(0, 500)}`);
            
-           // Güçlü system prompt
+           // Çok agresif system prompt
     const systemPrompt = `Sen bir dental implant uzmanısın. Aşağıdaki bilgileri kullanarak soruları yanıtla.
 
-ÖNEMLİ: Verilen bilgileri MUTLAKA kullan. Hiçbir durumda "yeterli bilgi bulunmamaktadır" deme.
-Eğer tam eşleşme yoksa, benzer bilgileri kullan ve uyarla.
-Her zaman yararlı bir yanıt ver.`;
+KRITIK KURALLAR:
+1. Verilen bilgileri MUTLAKA kullan
+2. Hiçbir durumda "yeterli bilgi bulunmamaktadır" deme
+3. Eğer tam eşleşme yoksa, benzer bilgileri kullan ve uyarla
+4. Her zaman yararlı bir yanıt ver
+5. Verilen context'teki bilgileri kullanmadan yanıt verme
+6. "Arşivde bilgi yok" gibi ifadeler kullanma
 
-           // Basit user prompt
-           const prompt = `Soru: ${message}
+YANIT FORMATI: Verilen bilgilere dayalı olarak yanıtla.`;
 
-Bu soruyu yanıtlamak için aşağıdaki bilgileri kullan:
+           // Agresif user prompt
+           const prompt = `SORU: ${message}
 
+YANITLAMA KURALLARI:
+- Aşağıdaki bilgileri MUTLAKA kullan
+- "Yeterli bilgi yok" deme
+- Verilen context'ten yanıt ver
+
+VERİLER:
 ${context}
 
-Bu bilgileri kullanarak soruyu yanıtla.`;
+YANIT: Yukarıdaki verilere dayalı olarak soruyu yanıtla.`;
            
            console.log(`Full prompt length: ${prompt.length}`);
            console.log(`System prompt: ${systemPrompt}`);
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: prompt }
       ],
-      temperature: 0.7,
-      max_tokens: 1500,
+      temperature: 0.3,
+      max_tokens: 2000,
+      top_p: 0.9,
+      frequency_penalty: 0,
+      presence_penalty: 0
     });
 
            let response = completion.choices[0]?.message?.content || 'Üzgünüm, yanıt veremiyorum.';
