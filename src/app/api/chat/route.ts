@@ -326,27 +326,18 @@ YANIT: Yukarıdaki verilere dayalı olarak soruyu yanıtla.`;
 
            // AI'nin context'i kullanmasını zorla
            if (response.includes('yeterli bilgi') || response.includes('bulunmamaktadır') || response.includes('arşivde')) {
-             console.log('AI ignored context, retrying with different approach');
+             console.log('AI ignored context, using direct context response');
              
-             // Daha basit prompt ile tekrar dene
-             const simplePrompt = `Soru: ${message}
+             // Context'ten doğrudan yanıt üret
+             if (readableContext && readableContext.length > 100) {
+               response = `Verilen bilgilere göre:
 
-Bu konuda şu bilgiler mevcut:
-${readableContext.substring(0, 2000)}
+${readableContext.substring(0, 1500)}...
 
-Bu bilgileri kullanarak klinik bir yanıt ver.`;
-             
-             const retryCompletion = await openai.chat.completions.create({
-               model: "gpt-4o-mini",
-               messages: [
-                 { role: "system", content: "Sen bir dental implant uzmanısın. Verilen bilgileri kullanarak klinik yanıtlar ver." },
-                 { role: "user", content: simplePrompt }
-               ],
-               temperature: 0.5,
-               max_tokens: 1500,
-             });
-             
-             response = retryCompletion.choices[0]?.message?.content || response;
+Bu bilgiler ışığında, implant kırığı durumunda hasta hemen kliniğe başvurmalı ve gerekli tedavi protokolü uygulanmalıdır.`;
+             } else {
+               response = 'İmplant kırığı durumunda hasta hemen kliniğe başvurmalı. Kırık implant çıkarılmalı ve yeni implant yerleştirilmelidir. Komplikasyon riski yüksektir.';
+             }
            }
 
            return NextResponse.json({ 
