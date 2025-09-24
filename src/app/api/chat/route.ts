@@ -76,8 +76,10 @@ function getContextSnippet(query: string, data: any[]): string {
   const queryLower = query.toLowerCase();
   const matches: string[] = [];
   
-  // Anahtar kelime mapping
+  // Anahtar kelime mapping - daha spesifik
   const keywordMap: { [key: string]: string[] } = {
+    'implant kırıl': ['implant fracture', 'implant broken', 'implant break'],
+    'implant kırık': ['implant fracture', 'implant broken', 'implant break'],
     'kırıl': ['fracture', 'broken', 'break', 'kırık'],
     'kırık': ['fracture', 'broken', 'break', 'kırıl'],
     'sıkış': ['stuck', 'sıkıştı', 'sıkışma'],
@@ -88,26 +90,39 @@ function getContextSnippet(query: string, data: any[]): string {
     'implant': ['implant', 'yerleştir', 'place']
   };
   
-  // Anahtar kelimeleri bul
+  // Anahtar kelimeleri bul - öncelik sırasına göre
   const searchTerms: string[] = [queryLower];
   
+  // Önce spesifik eşleşmeleri kontrol et
   for (const [turkish, english] of Object.entries(keywordMap)) {
     if (queryLower.includes(turkish)) {
-      searchTerms.push(...english);
+      // Eğer "implant kırıl" gibi spesifik bir terim varsa, sadece onu kullan
+      if (turkish.includes('implant')) {
+        searchTerms.push(...english);
+        break; // İmplant spesifik terim bulundu, diğerlerini arama
+      } else {
+        searchTerms.push(...english);
+      }
     }
   }
   
   console.log(`Search terms: ${searchTerms.join(', ')}`);
   
-  // Akıllı arama
+  // Akıllı arama - öncelik sırasına göre
   for (const item of data) {
     const itemStr = JSON.stringify(item).toLowerCase();
     
-    // Herhangi bir arama terimi eşleşirse ekle
+    // Önce tam eşleşme ara
+    if (itemStr.includes(queryLower)) {
+      matches.push(JSON.stringify(item));
+      continue;
+    }
+    
+    // Sonra arama terimlerini dene
     for (const term of searchTerms) {
       if (itemStr.includes(term)) {
         matches.push(JSON.stringify(item));
-        break; // Bir eşleşme bulduysa diğer terimleri aramaya gerek yok
+        break;
       }
     }
   }
