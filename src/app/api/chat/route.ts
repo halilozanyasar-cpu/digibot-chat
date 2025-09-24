@@ -51,28 +51,19 @@ function loadAllData(): any[] {
         
         const data = JSON.parse(cleanContent);
         
-        // Her JSON dosyası için format dönüşümü - çift dil desteği
+        // Hızlı format dönüşümü - sadece gerekli anahtarlar
         const formatData = (item: any) => {
           if (typeof item === 'object' && item !== null) {
-            const formatted: any = {};
-            for (const [key, value] of Object.entries(item)) {
-              // Hem Türkçe hem İngilizce anahtar kelimeler
-              formatted[key] = value; // Orijinal İngilizce
-              
-              // Türkçe çeviri de ekle
-              if (key === 'Title') formatted['Başlık'] = value;
-              else if (key === 'Content') formatted['İçerik'] = value;
-              else if (key === 'Authors') formatted['Yazarlar'] = value;
-              else if (key === 'Journal') formatted['Dergi'] = value;
-              else if (key === 'Year') formatted['Yıl'] = value;
-              else if (key === 'Study Type') formatted['Çalışma Tipi'] = value;
-              else if (key === 'Sample Size') formatted['Örnek Boyutu'] = value;
-              else if (key === 'Main Outcome') formatted['Ana Bulgular'] = value;
-              else if (key === 'Conclusion') formatted['Sonuç'] = value;
-              else if (key === 'Firma') formatted['Company'] = value;
-              else if (key === 'Sistem') formatted['System'] = value;
-              else if (key === 'Drill') formatted['Drill'] = value;
-            }
+            const formatted: any = { ...item }; // Orijinal veriyi koru
+            
+            // Sadece kritik anahtarlar için Türkçe ekle
+            if (item.Title) formatted['Başlık'] = item.Title;
+            if (item.Content) formatted['İçerik'] = item.Content;
+            if (item.Authors) formatted['Yazarlar'] = item.Authors;
+            if (item.Journal) formatted['Dergi'] = item.Journal;
+            if (item['Main Outcome']) formatted['Ana Bulgular'] = item['Main Outcome'];
+            if (item.Conclusion) formatted['Sonuç'] = item.Conclusion;
+            
             return formatted;
           }
           return item;
