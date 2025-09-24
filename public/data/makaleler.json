@@ -1,0 +1,62 @@
+[
+  {
+    "Title (Makale Başlığı)": "A systematic review of the accuracy of digital surgical guides for dental implantation",
+    "Authors": "Shi Y, Wang J, Ma C, Shen J, Dong X, Lin D",
+    "Journal": "Int J Implant Dent",
+    "Year": 2023,
+    "Study Type": "Systematic Review",
+    "Sample Size (Örnek/Hasta Sayısı)": "41 studies (2018–2022)",
+    "Intervention / Comparison (Uygulama/Karşılaştırma)": "Surgical guide designs (support, manufacturing, fixation)",
+    "Main Outcome (Ana Bulgular)": "Mean deviation <2 mm (most <1 mm); angular deviation <8° (most <5°); milling > 3D printing accuracy",
+    "Conclusion (Sonuç/Öneri)": "Digital guides reliable, esp. tooth-supported; mucosa-supported least accurate; fixation screw/sleeve design key.",
+    "Level of Evidence (Kanıt Düzeyi)": "Level I (Systematic Review)"
+  },
+  {
+    "Title (Makale Başlığı)": "All-on-4 Concept Update",
+    "Authors": "Michael H. Chan, Yoav A. Nudell",
+    "Journal": "Dental Clinics of North America",
+    "Year": 2021,
+    "Study Type": "Systematic Review",
+    "Sample Size (Örnek/Hasta Sayısı)": "276-1110 implants across studies",
+    "Intervention / Comparison (Uygulama/Karşılaştırma)": "All-on-4 vs conventional full-arch rehabilitation",
+    "Main Outcome (Ana Bulgular)": "Maxillary survival: 93.9-100% (13 years), Mandibular: 91.7-100% (18 years). Prosthetic survival: 97.06-100% maxilla, 98.8-100% mandible. Most common complications: acrylic fracture (59.4%) and screw loosening (60.3%).",
+    "Conclusion (Sonuç/Öneri)": "All-on-4 remains excellent for edentulous rehabilitation. Case selection is critical - avoid smokers, uncontrolled diabetics, and severe bruxers. Cantilever length should maintain CL/AP ratio <0.9. Oral hygiene is paramount for long-term success.",
+    "Level of Evidence (Kanıt Düzeyi)": "Level I (Systematic review of multiple studies)"
+  },
+  {
+    "Title (Makale Başlığı)": "Biological mechanisms underlying complications related to implant site preparation",
+    "Authors": "Georgios A. Kotsakis; Georgios E. Romanos",
+    "Journal": "Periodontology 2000",
+    "Year": 2022,
+    "Study Type": "Review Article (Narrative)",
+    "Sample Size (Örnek/Hasta Sayısı)": null,
+    "Intervention / Comparison (Uygulama/Karşılaştırma)": "Biologic impact of surgical steps in implant osteotomy (flap elevation, drilling, bone condensation, implant insertion) on bone healing and complications",
+    "Main Outcome (Ana Bulgular)": "Flap elevation: Raising a full-thickness flap disrupts periosteal blood supply, causing immediate bone remodeling – e.g., 9% medullary bone volume loss was observed in flapped vs non-flapped sites in dogs . Thermal injury: Drilling without proper irrigation can exceed the 47 °C threshold for bone necrosis; guided systems with sleeves may reduce irrigation efficacy (heat risk) . Insertion torque and micromotion: Overcompression of bone (e.g., using osteotomes or undersized osteotomy) can cause microfractures and delay healing, while excessive micromotion can jeopardize osseointegration. Titanium particles: Implant insertion and concurrent bone tapping generate Ti wear particles; these have been implicated in inflammatory reactions resembling peri-implantitis when corroded . Platform design: Platform switching and conical implant–abutment connections reduce crestal bone stress, helping limit remodeling, though bone loss still occurs from combined factors (surgical trauma + biology) .",
+    "Conclusion (Sonuç/Öneri)": "Successful implant site preparation requires minimizing trauma and respecting bone biology . Key recommendations: perform flapless or mini-flap surgery when possible (to preserve periosteum and blood supply) ; use sharp drills with copious irrigation (including internal irrigation or pre-cooled saline) to prevent overheating ; avoid over‐torquing implants – achieving primary stability is important, but not at the expense of crushing bone. Additionally, thorough irrigation during implant insertion can help wash out titanium debris. Implant design features (platform switch, surface treatments) aid in bone maintenance but cannot compensate for surgical trauma . In summary, gentle surgical technique and biologically oriented planning (ensuring sufficient bone volume, doing GBR if needed) are essential to prevent complications like marginal bone loss or early implant failure.",
+    "Level of Evidence (Kanıt Düzeyi)": "Level V (Narrative expert review)"
+  },
+  {
+    "Title (Makale Başlığı)": "Computer Technology Applications in Surgical Implant Dentistry: Systematic Review",
+    "Authors": "Tahmaseb A, Wismeijer D, Coucke W, Derksen W",
+    "Journal": "Int J Oral Maxillofac Implants",
+    "Year": 2014,
+    "Study Type": "Systematic Review + Meta-analysis",
+    "Sample Size (Örnek/Hasta Sayısı)": "38 studies (24 accuracy, 14 survival)",
+    "Intervention / Comparison (Uygulama/Karşılaştırma)": "Static guided surgery vs conventional",
+    "Main Outcome (Ana Bulgular)": "Mean entry deviation 1.12 mm, apex 1.39 mm; 12-mo failure 2.7%; 36% complication rate (template fracture, misfit)",
+    "Conclusion (Sonuç/Öneri)": "Static guided surgery accurate & predictable; complications frequent; long-term data needed to justify cost/radiation",
+    "Level of Evidence (Kanıt Düzeyi)": "Level I (Systematic Review + Meta-analysis)"
+  },
+  {
+    "Title (Makale Başlığı)": "Improvements in Implant Dentistry Over the Last Decade: Survival & Complications",
+    "Authors": "Pjetursson BE, Asgeirsson AG, Zwahlen M, Sailer I",
+    "Journal": "Int J Oral Maxillofac Implants",
+    "Year": 2014,
+    "Study Type": "Systematic Review",
+    "Sample Size (Örnek/Hasta Sayısı)": "139 studies (31 ≤2000, 108 >2000)",
+    "Intervention / Comparison (Uygulama/Karşılaştırma)": "Outcomes before vs after 2000",
+    "Main Outcome (Ana Bulgular)": "5-yr survival improved (93.5%→97.1%); screw-retained survival ↑ (77.6%→96.8%); more veneer fractures reported post-2000",
+    "Conclusion (Sonuç/Öneri)": "Evidence of learning curve: higher survival, fewer esthetic complications; technical complications remain common",
+    "Level of Evidence (Kanıt Düzeyi)": "Level I (Systematic Review + Comparative analysis)"
+  }
+]
