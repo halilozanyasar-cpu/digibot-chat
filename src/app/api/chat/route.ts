@@ -168,15 +168,16 @@ export async function POST(request: NextRequest) {
     console.log(`Context length: ${context.length}`);
     console.log(`Context preview: ${context.substring(0, 200)}...`);
     
-    // Test için basit context oluştur
-    const simpleContext = allData.length > 0 ? JSON.stringify(allData[0]).substring(0, 1000) : 'No data available';
+    // Test için daha büyük context oluştur
+    const simpleContext = allData.length > 0 ? JSON.stringify(allData.slice(0, 5)).substring(0, 3000) : 'No data available';
     console.log(`Simple context: ${simpleContext}`);
 
-    // System prompt - Basit ve net
-    const systemPrompt = `Sen bir dental implant uzmanısın. Verilen bilgileri kullanarak soruları yanıtla.
+    // System prompt - Çok agresif
+    const systemPrompt = `Sen bir dental implant uzmanısın. Aşağıdaki bilgileri kullanarak soruları yanıtla.
 
-ÖNEMLİ: Verilen bilgileri mutlaka kullan. Hiçbir durumda "yeterli bilgi bulunmamaktadır" deme.
+KRİTİK: Aşağıda verilen bilgileri MUTLAKA kullan. Hiçbir durumda "yeterli bilgi bulunmamaktadır" veya "arşivimizde yeterli bilgi" deme.
 Eğer tam eşleşme yoksa, benzer bilgileri kullan ve uyarla.
+Eğer bilgi yoksa, genel implant kırılması protokolünü ver.
 
 Yanıt formatı:
 [Çözüm önerisi]
@@ -187,23 +188,23 @@ Yanıt formatı:
 **Uyarı:**
 Bu yalnızca öneridir, klinik ve yasal sorumluluk hekime aittir.`;
 
-    // User prompt - Sade ve temiz
-    const prompt = `Soru: ${message}
+    // User prompt - Çok agresif
+    const prompt = `SORU: ${message}
 
-Bu soruyu yanıtlamak için aşağıdaki bilgileri kullan:
+BU SORUYU YANITLAMAK İÇİN AŞAĞIDAKİ BİLGİLERİ KULLAN:
 
 ${simpleContext}
 
-Bu bilgileri kullanarak soruyu yanıtla.`;
+BU BİLGİLERİ KULLANARAK SORUYU YANITLA. ASLA "YETERLİ BİLGİ BULUNMAMAKTADIR" DEME.`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: prompt }
       ],
-      temperature: 0.7,
-      max_tokens: 1500,
+      temperature: 0.3,
+      max_tokens: 2000,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
