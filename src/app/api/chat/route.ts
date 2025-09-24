@@ -168,12 +168,12 @@ function getContextSnippet(question: string, allData: any[]): string {
   }
   
   // Context'i sınırla - çok uzun olmasın
-  const limitedMatches = matches.slice(0, 5); // 20'den 5'e düşürdük
+  const limitedMatches = matches.slice(0, 3); // 5'ten 3'e düşürdük
   const context = limitedMatches.join('\n');
   
   // Context çok uzunsa kes
-  if (context.length > 10000) {
-    return context.substring(0, 10000) + '...';
+  if (context.length > 5000) {
+    return context.substring(0, 5000) + '...';
   }
   
   return context;
@@ -260,8 +260,9 @@ export async function POST(request: NextRequest) {
     // System prompt (Digibot kuralları)
     const systemPrompt = `Sen Digibot adında bir klinik asistanısın. Vaka bazlı cerrahi implant rehberlerinde hekime karar desteği sunarsın. 
     
-    KRİTİK: Aşağıda sağlanan literatür arşivinde 4573 adet veri bulunmaktadır. Bu verileri MUTLAKA kullanarak yanıt ver. 
-    Hiçbir durumda "Bu konuda arşivimizde yeterli bilgi bulunmamaktadır" deme. Her zaman arşivdeki bilgileri kullan.
+    ZORUNLU KURAL: Aşağıda sağlanan literatür arşivinde 4573 adet veri bulunmaktadır. Bu verileri KESINLIKLE kullanarak yanıt ver. 
+    ASLA "Bu konuda arşivimizde yeterli bilgi bulunmamaktadır" deme. Her durumda arşivdeki bilgileri kullan.
+    Eğer tam eşleşme yoksa, benzer konulardaki bilgileri kullan ve uyarla.
     
     Yalnızca arayüzde bulunan vaka raporu, frez protokolü, hekimin notları ve yüklenmiş literatür arşivini (komplikasyon ansiklopedileri, makaleler, rehberler) kaynak alırsın. 
     Bunların dışında veri istemezsin, başka kaynak kullanmazsın. Klinik kararın sorumluluğu hekime aittir; senin yanıtların yalnızca öneri niteliğindedir.
@@ -374,7 +375,7 @@ export async function POST(request: NextRequest) {
     Dil: Sade, pratik, klinik. Panik anında bile kısa ve uygulanabilir öneriler sunarsın.`;
 
     // User prompt
-    const prompt = `LİTERATÜR ARŞİVİ (4573 VERİ BULUNMAKTADIR):
+    const prompt = `LİTERATÜR ARŞİVİ:
 ${context}
 
 ${reportData ? `VAKA RAPORU:
@@ -388,11 +389,7 @@ Cerrahi Plan: ${JSON.stringify(reportData.surgicalPlan)}
 
 ` : ''}SORU: ${message}
 
-KRİTİK TALİMATLAR: 
-1. Yukarıdaki literatür arşivinde 4573 adet veri bulunmaktadır. Bu verileri MUTLAKA kullanarak yanıt ver.
-2. Hiçbir durumda "Bu konuda arşivimizde yeterli bilgi bulunmamaktadır" deme.
-3. Arşivdeki bilgileri kullanarak her soruya yanıt ver.
-4. KOMPLİKASYON SORULARINDA ÖNCE NETLEŞTİRİCİ SORU SOR, SONRA CEVAP VER.
+YUKARIDAKİ ARŞİVDEKİ BİLGİLERİ KULLANARAK YANIT VER. ASLA "YETERLİ BİLGİ BULUNMAMAKTADIR" DEME.
 3. Eğer soru komplikasyon içeriyorsa (kırık, sıkışma, kanama, yetersizlik vs.) ÖNCE tek netleştirici soru sor, sonra cevap ver.
 4. KOMPLİKASYON ÖRNEKLERİ (ÖNCE SORU SOR, SONRA CEVAP VER):
    * "Cerrahi şablon kırıldı" → ÖNCE: "Şablonun hangi kısmı kırıldı? (implant delikleri, destek yapısı, vs.)" SONRA: Çözüm + Kaynak + Uyarı
@@ -505,7 +502,11 @@ Bu yalnızca öneridir`;
         { role: "system", content: systemPrompt },
         { role: "user", content: prompt }
       ],
-      temperature: 0.3,
+      temperature: 0.1,
+      max_tokens: 2000,
+      top_p: 0.9,
+      frequency_penalty: 0,
+      presence_penalty: 0,
     });
 
     const response = completion.choices[0]?.message?.content || 'Üzgünüm, yanıt veremiyorum.';
