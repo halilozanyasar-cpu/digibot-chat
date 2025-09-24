@@ -30,9 +30,17 @@ def load_all_data():
         return combined
     
     print(f"Data folder exists: {os.path.exists(data_folder)}")
-    print(f"Files in data folder: {os.listdir(data_folder)}")
+    if os.path.exists(data_folder):
+        files = os.listdir(data_folder)
+        print(f"Files in data folder: {files}")
+        print(f"Total files: {len(files)}")
+        json_files = [f for f in files if f.endswith('.json')]
+        print(f"JSON files: {json_files}")
+        print(f"Total JSON files: {len(json_files)}")
     
     for filename in os.listdir(data_folder):
+        print(f"Processing file: {filename}")
+        
         # Mock verileri hariç tut
         if (filename.endswith(".json") and 
             not filename.startswith("mock") and 
@@ -51,6 +59,8 @@ def load_all_data():
                                   "test" in data_str or
                                   any(item.get("_id", "").startswith("mock") for item in (data if isinstance(data, list) else [data])))
                     
+                    print(f"File {filename} - is_mock_data: {is_mock_data}")
+                    
                     if not is_mock_data:
                         if isinstance(data, list):
                             combined.extend(data)
@@ -63,6 +73,8 @@ def load_all_data():
             except Exception as e:
                 print(f"Error loading {filename}: {e}")
                 continue
+        else:
+            print(f"Skipped file (not JSON or mock/test): {filename}")
     
     print(f"Total loaded entries: {len(combined)}")
     return combined
