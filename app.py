@@ -41,23 +41,29 @@ def load_all_data():
     for filename in os.listdir(data_folder):
         print(f"Processing file: {filename}")
         
-        # Mock verileri hariç tut
+        # Sadece açık mock/test dosyalarını hariç tut
         if (filename.endswith(".json") and 
-            not filename.startswith("mock") and 
-            not filename.startswith("test") and
-            "mock" not in filename.lower() and
-            "test" not in filename.lower()):
+            not filename.startswith("mock-") and 
+            not filename.startswith("test-") and
+            filename not in ["mock-data.json", "mock-reports.json"]):
             try:
                 filepath = os.path.join(data_folder, filename)
                 print(f"Loading file: {filename}")
                 with open(filepath, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     
-                    # Mock veri içeriğini kontrol et
+                    # Mock veri içeriğini kontrol et - çok daha güvenli filtreleme
                     data_str = json.dumps(data, ensure_ascii=False).lower()
-                    is_mock_data = ("mock" in data_str or 
-                                  "test" in data_str or
-                                  any(item.get("_id", "").startswith("mock") for item in (data if isinstance(data, list) else [data])))
+                    
+                    # Sadece açık mock/test verilerini filtrele
+                    is_mock_data = (
+                        # İçerikte açık mock/test referansları varsa
+                        ("mock-user" in data_str or "test-user" in data_str or 
+                         "mock-order" in data_str or "test-order" in data_str) or
+                        # _id'de açık mock/test varsa
+                        any(item.get("_id", "").startswith("mock-") or item.get("_id", "").startswith("test-") 
+                            for item in (data if isinstance(data, list) else [data]))
+                    )
                     
                     print(f"File {filename} - is_mock_data: {is_mock_data}")
                     
