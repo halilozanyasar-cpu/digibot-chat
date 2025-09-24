@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+from flask_cors import CORS
 import openai
 import json
 import os
@@ -6,6 +7,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 app = Flask(__name__)
+CORS(app)  # CORS'u etkinleştir
 
 # --- API KEY .env'den alınıyor ---
 load_dotenv()
