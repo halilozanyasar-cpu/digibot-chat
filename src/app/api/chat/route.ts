@@ -243,7 +243,8 @@ export async function POST(request: NextRequest) {
       }
     } else {
       console.log('✅ DATA LOADED SUCCESSFULLY');
-      console.log('Sample data:', JSON.stringify(allData[0], null, 2));
+      console.log('Sample data keys:', Object.keys(allData[0] || {}));
+      console.log('Sample data preview:', JSON.stringify(allData[0], null, 2).substring(0, 500));
     }
     
     // Rapor verilerini yükle (eğer reportId varsa)
@@ -256,6 +257,10 @@ export async function POST(request: NextRequest) {
     const context = getContextSnippet(message, allData);
     console.log(`Context length: ${context.length}`);
     console.log(`Context preview: ${context.substring(0, 200)}...`);
+    
+    // Test için basit context oluştur
+    const simpleContext = allData.length > 0 ? JSON.stringify(allData[0]).substring(0, 1000) : 'No data available';
+    console.log(`Simple context: ${simpleContext}`);
 
     // System prompt (Digibot kuralları)
     const systemPrompt = `Sen bir dental implant uzmanısın. Kullanıcının sorusunu yanıtlamak için verilen arşivdeki bilgileri kullan.
@@ -376,12 +381,11 @@ Kurallar:
     Dil: Sade, pratik, klinik. Panik anında bile kısa ve uygulanabilir öneriler sunarsın.`;
 
     // User prompt
-    const prompt = `Arşiv bilgileri:
-${context}
+    const prompt = `Veri: ${simpleContext}
 
 Soru: ${message}
 
-Bu arşivdeki bilgileri kullanarak soruyu yanıtla.`
+Bu veriyi kullanarak soruyu yanıtla.`
 3. Eğer soru komplikasyon içeriyorsa (kırık, sıkışma, kanama, yetersizlik vs.) ÖNCE tek netleştirici soru sor, sonra cevap ver.
 4. KOMPLİKASYON ÖRNEKLERİ (ÖNCE SORU SOR, SONRA CEVAP VER):
    * "Cerrahi şablon kırıldı" → ÖNCE: "Şablonun hangi kısmı kırıldı? (implant delikleri, destek yapısı, vs.)" SONRA: Çözüm + Kaynak + Uyarı
