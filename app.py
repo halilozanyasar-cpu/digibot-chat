@@ -13,6 +13,12 @@ CORS(app)  # CORS'u etkinleştir
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+# API Key kontrolü
+if not openai.api_key:
+    print("⚠️ WARNING: OPENAI_API_KEY not found in environment variables!")
+else:
+    print(f"✅ OpenAI API Key loaded: {openai.api_key[:10]}...")
+
 # --- Maliyet Hesaplama ---
 def estimate_cost(input_tokens, output_tokens, model="gpt-4o-mini"):
     pricing = {
@@ -194,6 +200,32 @@ def index():
         # -----------------------------------
 
     return render_template("index.html", answer=answer)
+
+@app.route("/test-api", methods=["GET"])
+def test_api():
+    """OpenAI API test endpoint"""
+    try:
+        # Basit bir test isteği
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": "Test mesajı - API çalışıyor mu?"}
+            ],
+            max_tokens=10
+        )
+        
+        return {
+            "status": "success",
+            "message": "OpenAI API çalışıyor",
+            "response": response.choices[0].message.content,
+            "api_key_loaded": bool(openai.api_key)
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": f"OpenAI API hatası: {str(e)}",
+            "api_key_loaded": bool(openai.api_key)
+        }
 
 if __name__ == "__main__":
     app.run(debug=True)
