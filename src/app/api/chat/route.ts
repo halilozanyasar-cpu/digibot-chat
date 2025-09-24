@@ -232,8 +232,21 @@ export async function POST(request: NextRequest) {
            console.log(`Context length: ${context.length}`);
            console.log(`First 500 chars of context: ${context.substring(0, 500)}`);
            
-           // HARDCODED TEST - AI'yi zorla
-           const testContext = `{"Title": "İmplant Kırığı", "Content": "İmplant kırığı durumunda hasta hemen kliniğe başvurmalı. Kırık implant çıkarılmalı ve yeni implant yerleştirilmelidir. Komplikasyon riski yüksektir."}`;
+           // Context'i AI için daha anlaşılır hale getir
+           const readableContext = context ? 
+             context.replace(/[{}"]/g, ' ')
+                   .replace(/:/g, ': ')
+                   .replace(/,/g, ', ')
+                   .replace(/Title/g, 'Başlık')
+                   .replace(/Content/g, 'İçerik')
+                   .replace(/Authors/g, 'Yazarlar')
+                   .replace(/Journal/g, 'Dergi')
+                   .replace(/Year/g, 'Yıl')
+                   .replace(/Study Type/g, 'Çalışma Tipi')
+                   .replace(/Sample Size/g, 'Örnek Boyutu')
+                   .replace(/Main Outcome/g, 'Ana Bulgular')
+                   .replace(/Conclusion/g, 'Sonuç')
+                   .substring(0, 4000) : '';
            
            // Çok agresif system prompt
     const systemPrompt = `Sen bir dental implant uzmanısın. Aşağıdaki bilgileri kullanarak soruları yanıtla.
@@ -257,7 +270,7 @@ YANITLAMA KURALLARI:
 - Verilen context'ten yanıt ver
 
 VERİLER:
-${testContext}
+${readableContext}
 
 YANIT: Yukarıdaki verilere dayalı olarak soruyu yanıtla.`;
            
@@ -282,16 +295,29 @@ YANIT: Yukarıdaki verilere dayalı olarak soruyu yanıtla.`;
            console.log(`AI Response: ${response}`);
            console.log(`Response length: ${response.length}`);
 
-           // FALLBACK SYSTEM - AI context'i ignore ederse
+           // AI'nin context'i kullanmasını zorla
            if (response.includes('yeterli bilgi') || response.includes('bulunmamaktadır') || response.includes('arşivde')) {
-             console.log('AI ignored context, using fallback response');
+             console.log('AI ignored context, retrying with different approach');
              
-             // Context'ten doğrudan yanıt üret
-             if (context && context.length > 100) {
-               response = `Verilen bilgilere göre: ${context.substring(0, 1000)}...`;
-             } else {
-               response = 'İmplant kırığı durumunda hasta hemen kliniğe başvurmalı. Kırık implant çıkarılmalı ve yeni implant yerleştirilmelidir. Komplikasyon riski yüksektir.';
-             }
+             // Daha basit prompt ile tekrar dene
+             const simplePrompt = `Soru: ${message}
+
+Bu konuda şu bilgiler mevcut:
+${readableContext.substring(0, 2000)}
+
+Bu bilgileri kullanarak klinik bir yanıt ver.`;
+             
+             const retryCompletion = await openai.chat.completions.create({
+               model: "gpt-4o-mini",
+               messages: [
+                 { role: "system", content: "Sen bir dental implant uzmanısın. Verilen bilgileri kullanarak klinik yanıtlar ver." },
+                 { role: "user", content: simplePrompt }
+               ],
+               temperature: 0.5,
+               max_tokens: 1500,
+             });
+             
+             response = retryCompletion.choices[0]?.message?.content || response;
            }
 
            return NextResponse.json({ 
