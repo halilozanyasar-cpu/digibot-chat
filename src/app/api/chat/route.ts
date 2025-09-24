@@ -76,18 +76,90 @@ function getContextSnippet(query: string, data: any[]): string {
   const queryLower = query.toLowerCase();
   const matches: string[] = [];
   
-  // Anahtar kelime mapping - daha spesifik
+  // Kapsamlı anahtar kelime mapping - tüm veri türleri için
   const keywordMap: { [key: string]: string[] } = {
+    // İmplant kırığı - spesifik
     'implant kırıl': ['implant fracture', 'implant broken', 'implant break'],
     'implant kırık': ['implant fracture', 'implant broken', 'implant break'],
+    
+    // Genel kırık
     'kırıl': ['fracture', 'broken', 'break', 'kırık'],
     'kırık': ['fracture', 'broken', 'break', 'kırıl'],
+    
+    // Sıkışma
     'sıkış': ['stuck', 'sıkıştı', 'sıkışma'],
+    'sıkıştı': ['stuck', 'sıkış', 'sıkışma'],
+    
+    // Kanama
     'kanama': ['bleeding', 'hemorrhage'],
+    
+    // Yetersizlik
     'yetersiz': ['insufficient', 'lack', 'eksik'],
+    'eksik': ['insufficient', 'lack', 'yetersiz'],
+    
+    // Problem/komplikasyon
     'problem': ['complication', 'issue', 'sorun'],
+    'komplikasyon': ['complication', 'problem', 'issue'],
+    'sorun': ['problem', 'complication', 'issue'],
+    
+    // Frez protokolü
     'frez': ['drill', 'delme', 'protokol'],
-    'implant': ['implant', 'yerleştir', 'place']
+    'drill': ['frez', 'delme', 'protokol'],
+    'protokol': ['protocol', 'frez', 'drill'],
+    
+    // İmplant genel
+    'implant': ['implant', 'yerleştir', 'place'],
+    'yerleştir': ['place', 'implant', 'insert'],
+    
+    // Kemik
+    'kemik': ['bone', 'osteotomy', 'osteotomi'],
+    'osteotomi': ['osteotomy', 'kemik'],
+    
+    // Anestezi
+    'anestezi': ['anesthesia', 'local', 'lokal'],
+    'lokal': ['local', 'anesthesia', 'anestezi'],
+    
+    // Sütür
+    'sutur': ['suture', 'dikiş', 'stitch'],
+    'dikiş': ['suture', 'sutur', 'stitch'],
+    
+    // Planlama
+    'planlama': ['planning', 'plan', 'planla'],
+    'plan': ['planning', 'planlama'],
+    
+    // Ölçü
+    'ölçü': ['measure', 'measurement', 'ölçüm'],
+    'ölçüm': ['measurement', 'ölçü'],
+    
+    // Şablon
+    'şablon': ['template', 'guide', 'rehber'],
+    'rehber': ['guide', 'template', 'şablon'],
+    
+    // Steril
+    'steril': ['sterile', 'sterilization', 'sterilizasyon'],
+    'sterilizasyon': ['sterilization', 'steril'],
+    
+    // Cerrahi
+    'cerrahi': ['surgical', 'surgery'],
+    'ameliyat': ['surgery', 'surgical', 'cerrahi'],
+    
+    // Hasta
+    'hasta': ['patient'],
+    
+    // Diş
+    'diş': ['tooth', 'teeth'],
+    
+    // Çene
+    'çene': ['jaw', 'mandible', 'maxilla'],
+    
+    // Sinüs
+    'sinüs': ['sinus'],
+    
+    // Greft
+    'greft': ['graft'],
+    
+    // Membran
+    'membran': ['membrane']
   };
   
   // Anahtar kelimeleri bul - öncelik sırasına göre
