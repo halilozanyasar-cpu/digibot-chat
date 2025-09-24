@@ -163,14 +163,29 @@ export async function POST(request: NextRequest) {
       reportData = await loadReportData(reportId);
     }
     
-    // İlgili context'i bul
-    const context = getContextSnippet(message, allData);
-    console.log(`Context length: ${context.length}`);
-    console.log(`Context preview: ${context.substring(0, 200)}...`);
+    // İlgili context'i bul - implant kırılması için özel arama
+    let relevantContext = '';
     
-    // Test için daha büyük context oluştur
-    const simpleContext = allData.length > 0 ? JSON.stringify(allData.slice(0, 5)).substring(0, 3000) : 'No data available';
-    console.log(`Simple context: ${simpleContext}`);
+    // İmplant kırılması için özel arama
+    if (message.toLowerCase().includes('kırıl') || message.toLowerCase().includes('kırık') || message.toLowerCase().includes('fracture')) {
+      for (const item of allData) {
+        const itemStr = JSON.stringify(item).toLowerCase();
+        if (itemStr.includes('fracture') || itemStr.includes('kırıl') || itemStr.includes('kırık') || 
+            itemStr.includes('complication') || itemStr.includes('failure') || itemStr.includes('problem')) {
+          relevantContext += JSON.stringify(item) + '\n\n';
+        }
+      }
+    } else {
+      // Normal arama
+      relevantContext = getContextSnippet(message, allData);
+    }
+    
+    console.log(`Relevant context length: ${relevantContext.length}`);
+    console.log(`Context preview: ${relevantContext.substring(0, 500)}...`);
+    
+    // Context'i sınırla
+    const simpleContext = relevantContext.length > 0 ? relevantContext.substring(0, 4000) : 'No relevant data found';
+    console.log(`Final context: ${simpleContext.substring(0, 200)}...`);
 
     // System prompt - Çok agresif
     const systemPrompt = `Sen bir dental implant uzmanısın. Aşağıdaki bilgileri kullanarak soruları yanıtla.
