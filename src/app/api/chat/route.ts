@@ -51,11 +51,40 @@ function loadAllData(): any[] {
         
         const data = JSON.parse(cleanContent);
         
+        // Her JSON dosyası için format dönüşümü
+        const formatData = (item: any) => {
+          if (typeof item === 'object' && item !== null) {
+            const formatted: any = {};
+            for (const [key, value] of Object.entries(item)) {
+              // Anahtar kelimeleri Türkçe'ye çevir
+              let newKey = key;
+              if (key === 'Title') newKey = 'Başlık';
+              else if (key === 'Content') newKey = 'İçerik';
+              else if (key === 'Authors') newKey = 'Yazarlar';
+              else if (key === 'Journal') newKey = 'Dergi';
+              else if (key === 'Year') newKey = 'Yıl';
+              else if (key === 'Study Type') newKey = 'Çalışma Tipi';
+              else if (key === 'Sample Size') newKey = 'Örnek Boyutu';
+              else if (key === 'Main Outcome') newKey = 'Ana Bulgular';
+              else if (key === 'Conclusion') newKey = 'Sonuç';
+              else if (key === 'Firma') newKey = 'Firma';
+              else if (key === 'Sistem') newKey = 'Sistem';
+              else if (key === 'Drill') newKey = 'Frez';
+              
+              formatted[newKey] = value;
+            }
+            return formatted;
+          }
+          return item;
+        };
+        
         if (Array.isArray(data)) {
-          combined.push(...data);
-          console.log(`Added ${data.length} entries from ${filename}`);
+          const formattedData = data.map(formatData);
+          combined.push(...formattedData);
+          console.log(`Added ${formattedData.length} entries from ${filename}`);
         } else {
-          combined.push(data);
+          const formattedData = formatData(data);
+          combined.push(formattedData);
           console.log(`Added 1 entry from ${filename}`);
         }
       } catch (error) {
@@ -232,23 +261,11 @@ export async function POST(request: NextRequest) {
            console.log(`Context length: ${context.length}`);
            console.log(`First 500 chars of context: ${context.substring(0, 500)}`);
            
-           // Context'i AI için tamamen okunabilir hale getir
+           // Context'i AI için okunabilir hale getir (veri zaten formatlanmış)
            const readableContext = context ? 
              context.replace(/\{/g, '')
                    .replace(/\}/g, '')
                    .replace(/"/g, '')
-                   .replace(/Title/g, '\nBaşlık')
-                   .replace(/Content/g, '\nİçerik')
-                   .replace(/Authors/g, '\nYazarlar')
-                   .replace(/Journal/g, '\nDergi')
-                   .replace(/Year/g, '\nYıl')
-                   .replace(/Study Type/g, '\nÇalışma Tipi')
-                   .replace(/Sample Size/g, '\nÖrnek Boyutu')
-                   .replace(/Main Outcome/g, '\nAna Bulgular')
-                   .replace(/Conclusion/g, '\nSonuç')
-                   .replace(/Firma/g, '\nFirma')
-                   .replace(/Sistem/g, '\nSistem')
-                   .replace(/Drill/g, '\nFrez')
                    .replace(/:/g, ': ')
                    .replace(/,/g, '\n')
                    .replace(/\n\s*\n/g, '\n')
