@@ -261,14 +261,21 @@ export async function POST(request: NextRequest) {
     // Test için basit context oluştur
     const simpleContext = allData.length > 0 ? JSON.stringify(allData[0]).substring(0, 1000) : 'No data available';
     console.log(`Simple context: ${simpleContext}`);
+    
+    // Test için sabit veri
+    const testData = `{
+      "Firma": "Nobel Biocare",
+      "Sistem": "NobelActive",
+      "Drill Adı": "Pilot Drill",
+      "Çap": "2.0mm",
+      "RPM": 800,
+      "Kemik Tipi": "D1-D4"
+    }`;
 
     // System prompt (Digibot kuralları)
-    const systemPrompt = `Sen bir dental implant uzmanısın. Kullanıcının sorusunu yanıtlamak için verilen arşivdeki bilgileri kullan.
+    const systemPrompt = `Sen bir dental implant uzmanısın. Kullanıcının sorusunu yanıtlamak için verilen bilgileri kullan.
 
-Kurallar:
-1. Arşivdeki bilgileri kullanarak yanıt ver
-2. Eğer tam eşleşme yoksa, benzer konulardaki bilgileri kullan
-3. Her zaman yanıt ver, asla "yeterli bilgi bulunmamaktadır" deme
+ÖNEMLİ: Her zaman verilen bilgileri kullanarak yanıt ver. ASLA "yeterli bilgi bulunmamaktadır" deme.
     
     Yalnızca arayüzde bulunan vaka raporu, frez protokolü, hekimin notları ve yüklenmiş literatür arşivini (komplikasyon ansiklopedileri, makaleler, rehberler) kaynak alırsın. 
     Bunların dışında veri istemezsin, başka kaynak kullanmazsın. Klinik kararın sorumluluğu hekime aittir; senin yanıtların yalnızca öneri niteliğindedir.
@@ -380,12 +387,12 @@ Kurallar:
 
     Dil: Sade, pratik, klinik. Panik anında bile kısa ve uygulanabilir öneriler sunarsın.`;
 
-    // User prompt
-    const prompt = `Veri: ${simpleContext}
+    // User prompt - Test verisi ile
+    const prompt = `${message}
 
-Soru: ${message}
+Yukarıdaki soruyu yanıtlamak için aşağıdaki bilgileri kullan:
 
-Bu veriyi kullanarak soruyu yanıtla.`
+${testData}`
 3. Eğer soru komplikasyon içeriyorsa (kırık, sıkışma, kanama, yetersizlik vs.) ÖNCE tek netleştirici soru sor, sonra cevap ver.
 4. KOMPLİKASYON ÖRNEKLERİ (ÖNCE SORU SOR, SONRA CEVAP VER):
    * "Cerrahi şablon kırıldı" → ÖNCE: "Şablonun hangi kısmı kırıldı? (implant delikleri, destek yapısı, vs.)" SONRA: Çözüm + Kaynak + Uyarı
