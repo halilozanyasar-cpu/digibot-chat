@@ -69,18 +69,46 @@ function loadAllData(): any[] {
   return combined;
 }
 
-// Context snippet bulma fonksiyonu
+// Akıllı context snippet bulma fonksiyonu
 function getContextSnippet(query: string, data: any[]): string {
   if (!data || data.length === 0) return '';
   
   const queryLower = query.toLowerCase();
   const matches: string[] = [];
   
-  // Basit arama
+  // Anahtar kelime mapping
+  const keywordMap: { [key: string]: string[] } = {
+    'kırıl': ['fracture', 'broken', 'break', 'kırık'],
+    'kırık': ['fracture', 'broken', 'break', 'kırıl'],
+    'sıkış': ['stuck', 'sıkıştı', 'sıkışma'],
+    'kanama': ['bleeding', 'hemorrhage'],
+    'yetersiz': ['insufficient', 'lack', 'eksik'],
+    'problem': ['complication', 'issue', 'sorun'],
+    'frez': ['drill', 'delme', 'protokol'],
+    'implant': ['implant', 'yerleştir', 'place']
+  };
+  
+  // Anahtar kelimeleri bul
+  const searchTerms: string[] = [queryLower];
+  
+  for (const [turkish, english] of Object.entries(keywordMap)) {
+    if (queryLower.includes(turkish)) {
+      searchTerms.push(...english);
+    }
+  }
+  
+  console.log(`Search terms: ${searchTerms.join(', ')}`);
+  
+  // Akıllı arama
   for (const item of data) {
     const itemStr = JSON.stringify(item).toLowerCase();
-    if (itemStr.includes(queryLower)) {
-      matches.push(JSON.stringify(item));
+    
+    // Herhangi bir arama terimi eşleşirse ekle
+    for (const term of searchTerms) {
+      if (itemStr.includes(term)) {
+        matches.push(JSON.stringify(item));
+        break; // Bir eşleşme bulduysa diğer terimleri aramaya gerek yok
+      }
     }
   }
   
@@ -88,8 +116,8 @@ function getContextSnippet(query: string, data: any[]): string {
   
   // Context uzunluğunu sınırla
   let context = matches.join('\n\n');
-  if (context.length > 10000) {
-    context = context.substring(0, 10000) + '...';
+  if (context.length > 8000) {
+    context = context.substring(0, 8000) + '...';
   }
   
   return context;
@@ -116,8 +144,12 @@ export async function POST(request: NextRequest) {
     const context = getContextSnippet(message, allData);
     console.log(`Context length: ${context.length}`);
     
-    // Basit system prompt
-    const systemPrompt = `Sen bir dental implant uzmanısın. Verilen bilgileri kullanarak soruları yanıtla.`;
+    // Güçlü system prompt
+    const systemPrompt = `Sen bir dental implant uzmanısın. Aşağıdaki bilgileri kullanarak soruları yanıtla.
+
+ÖNEMLİ: Verilen bilgileri MUTLAKA kullan. Hiçbir durumda "yeterli bilgi bulunmamaktadır" deme.
+Eğer tam eşleşme yoksa, benzer bilgileri kullan ve uyarla.
+Her zaman yararlı bir yanıt ver.`;
 
     // Basit user prompt
     const prompt = `Soru: ${message}
