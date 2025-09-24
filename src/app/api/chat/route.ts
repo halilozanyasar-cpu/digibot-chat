@@ -258,10 +258,12 @@ export async function POST(request: NextRequest) {
     console.log(`Context preview: ${context.substring(0, 200)}...`);
 
     // System prompt (Digibot kuralları)
-    const systemPrompt = `Sen bir dental implant uzmanısın. Kullanıcıya verilen arşivdeki bilgileri kullanarak yanıt ver.
-    
-    ÖNEMLİ: Her zaman arşivdeki bilgileri kullan. Eğer tam eşleşme yoksa, benzer konulardaki bilgileri kullan.
-    ASLA "yeterli bilgi bulunmamaktadır" deme.
+    const systemPrompt = `Sen bir dental implant uzmanısın. Kullanıcının sorusunu yanıtlamak için verilen arşivdeki bilgileri kullan.
+
+Kurallar:
+1. Arşivdeki bilgileri kullanarak yanıt ver
+2. Eğer tam eşleşme yoksa, benzer konulardaki bilgileri kullan
+3. Her zaman yanıt ver, asla "yeterli bilgi bulunmamaktadır" deme
     
     Yalnızca arayüzde bulunan vaka raporu, frez protokolü, hekimin notları ve yüklenmiş literatür arşivini (komplikasyon ansiklopedileri, makaleler, rehberler) kaynak alırsın. 
     Bunların dışında veri istemezsin, başka kaynak kullanmazsın. Klinik kararın sorumluluğu hekime aittir; senin yanıtların yalnızca öneri niteliğindedir.
@@ -374,13 +376,12 @@ export async function POST(request: NextRequest) {
     Dil: Sade, pratik, klinik. Panik anında bile kısa ve uygulanabilir öneriler sunarsın.`;
 
     // User prompt
-    const prompt = `Arşivdeki bilgiler:
-
+    const prompt = `Arşiv bilgileri:
 ${context}
 
 Soru: ${message}
 
-Yukarıdaki arşivdeki bilgileri kullanarak yanıt ver. Eğer tam eşleşme yoksa, benzer konulardaki bilgileri kullan. Her zaman arşivdeki bilgileri kullan.
+Bu arşivdeki bilgileri kullanarak soruyu yanıtla.`
 3. Eğer soru komplikasyon içeriyorsa (kırık, sıkışma, kanama, yetersizlik vs.) ÖNCE tek netleştirici soru sor, sonra cevap ver.
 4. KOMPLİKASYON ÖRNEKLERİ (ÖNCE SORU SOR, SONRA CEVAP VER):
    * "Cerrahi şablon kırıldı" → ÖNCE: "Şablonun hangi kısmı kırıldı? (implant delikleri, destek yapısı, vs.)" SONRA: Çözüm + Kaynak + Uyarı
@@ -488,14 +489,14 @@ Literatür Arşivi, CHAPTER 6
 Bu yalnızca öneridir`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: prompt }
       ],
-      temperature: 0.1,
-      max_tokens: 2000,
-      top_p: 0.9,
+      temperature: 0.7,
+      max_tokens: 1500,
+      top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
     });
