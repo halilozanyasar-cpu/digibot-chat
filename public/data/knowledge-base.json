@@ -1,0 +1,126 @@
+{
+  "dental_guides": [
+    {
+      "id": 1,
+      "title": "Dijital Cerrahi Rehber Tasarımı",
+      "description": "3D tomografi ve ağız içi tarama verilerinizden hassas cerrahi rehberler tasarlıyoruz",
+      "price": 500,
+      "features": ["3D implant planlama", "Hassas pozisyonlama", "Çene anatomisi analizi", "Protez uyumluluğu kontrolü"],
+      "delivery_time": "2-3 iş günü",
+      "requirements": ["3D tomografi (DICOM)", "Ağız içi tarama (STL)", "Hasta bilgileri"]
+    },
+    {
+      "id": 2,
+      "title": "QR Kodlu Rapor Sistemi",
+      "description": "Her cerrahi rehber için benzersiz QR kod ile detaylı raporlama sistemi",
+      "price": 0,
+      "features": ["Benzersiz QR kod", "Detaylı vaka raporu", "Mobil erişim", "Güvenli veri saklama"],
+      "delivery_time": "Anında",
+      "requirements": ["Tamamlanmış cerrahi rehber"]
+    }
+  ],
+  "pricing_plans": [
+    {
+      "name": "Başlangıç",
+      "price": 500,
+      "period": "rehber başına",
+      "description": "Küçük klinikler için ideal",
+      "features": [
+        "Dijital cerrahi rehber tasarımı",
+        "QR kodlu rapor sistemi",
+        "Temel destek",
+        "5 rehber/ay limit"
+      ]
+    },
+    {
+      "name": "Profesyonel",
+      "price": 1500,
+      "period": "aylık",
+      "description": "Orta ölçekli klinikler için",
+      "features": [
+        "Sınırsız rehber tasarımı",
+        "QR kodlu rapor sistemi",
+        "AI cerrahi asistan",
+        "Öncelikli destek",
+        "Mobil uygulama"
+      ]
+    },
+    {
+      "name": "Kurumsal",
+      "price": 3000,
+      "period": "aylık",
+      "description": "Büyük klinikler ve hastaneler için",
+      "features": [
+        "Sınırsız rehber tasarımı",
+        "QR kodlu rapor sistemi",
+        "AI cerrahi asistan",
+        "7/24 destek",
+        "Mobil uygulama",
+        "Özel entegrasyonlar",
+        "Eğitim programları"
+      ]
+    }
+  ],
+  "faq": [
+    {
+      "question": "Cerrahi rehber ne kadar sürede hazırlanır?",
+      "answer": "Standart cerrahi rehberler 2-3 iş günü içinde hazırlanır. Acil durumlar için 24 saat içinde teslim seçeneği mevcuttur."
+    },
+    {
+      "question": "Hangi dosya formatlarını kabul ediyorsunuz?",
+      "answer": "3D tomografi için DICOM formatı, ağız içi tarama için STL formatını kabul ediyoruz. Diğer formatlar için lütfen iletişime geçin."
+    },
+    {
+      "question": "QR kod sistemi nasıl çalışır?",
+      "answer": "Her cerrahi rehber için benzersiz bir QR kod oluşturulur. Bu kod ile rehberin detaylı raporuna, kullanım talimatlarına ve hasta bilgilerine güvenli şekilde erişebilirsiniz."
+    },
+    {
+      "question": "AI cerrahi asistan ne tür sorulara yanıt verebilir?",
+      "answer": "AI asistanımız cerrahi teknikler, komplikasyon yönetimi, implant seçimi, hasta değerlendirmesi ve genel dental implantoloji konularında danışmanlık sağlar."
+    },
+    {
+      "question": "Verilerimin güvenliği nasıl sağlanıyor?",
+      "answer": "Tüm hasta verileri şifrelenerek saklanır ve GDPR uyumlu güvenlik protokolleri kullanılır. Verileriniz sadece size aittir ve üçüncü taraflarla paylaşılmaz."
+    }
+  ],
+  "company_info": {
+    "name": "Digimplant Solutions",
+    "founded": 2020,
+    "employees": "500+",
+    "successful_cases": "2000+",
+    "customer_satisfaction": "99%",
+    "support_hours": "24/7",
+    "contact": {
+      "phone": "+90 (212) 555 0123",
+      "email": "info@digimplantsolutions.com",
+      "address": "İstanbul, Türkiye"
+    }
+  },
+  "services": [
+    {
+      "name": "Dijital Cerrahi Rehber Tasarımı",
+      "description": "3D tomografi ve ağız içi tarama verilerinizden hassas cerrahi rehberler tasarlıyoruz",
+      "icon": "FileText",
+      "price": "₺500"
+    },
+    {
+      "name": "QR Kodlu Rapor Sistemi",
+      "description": "Her cerrahi rehber için benzersiz QR kod ile detaylı raporlama sistemi",
+      "icon": "QrCode",
+      "price": "Ücretsiz"
+    },
+    {
+      "name": "AI Cerrahi Asistan",
+      "description": "OpenAI GPT destekli akıllı cerrahi asistan ile 7/24 danışmanlık",
+      "icon": "Brain",
+      "price": "₺200/ay"
+    },
+    {
+      "name": "Mobil Uygulama",
+      "description": "Hastalarınız için özel mobil uygulama ile takip ve bilgilendirme",
+      "icon": "Smartphone",
+      "price": "₺100/ay"
+    }
+  ]
+}
+

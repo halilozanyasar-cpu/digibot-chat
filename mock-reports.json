@@ -1,0 +1,49 @@
+{
+  "mock-report-1758563996082": {
+    "_id": "mock-report-1758563996082",
+    "orderId": "mock-order-1758563397875",
+    "patientName": "Test Hasta",
+    "implantDetails": {
+      "brand": "Nobel Biocare",
+      "model": "NobelActive",
+      "count": 2,
+      "positions": [
+        "16",
+        "26"
+      ]
+    },
+    "prosthesisType": "Tek diş kron",
+    "qrCode": "data:image/png;base64,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",
+    "reportUrl": "http://localhost:3000/mock-approve/mock-report-1758563996082",
+    "status": "approved",
+    "teethData": [
+      {
+        "toothNumber": "14",
+        "implantBrand": "Nobel Biocare",
+        "implantModel": "NobelActive",
+        "implantDiameter": "3.75",
+        "implantLength": "11.5",
+        "expectedBoneQuality": "d3",
+        "recommendedDrillProtocol": "1-->2-->3"
+      }
+    ],
+    "clinicalNotes": "",
+    "pricing": {
+      "guidePrice": 0,
+      "sleevePrice": 0,
+      "totalAmount": 0,
+      "provisionAmount": 0
+    },
+    "paymentStatus": "paid",
+    "pdfCount": 2,
+    "createdAt": "2025-09-22T17:59:56.093Z",
+    "approvedAt": "2025-09-22T18:00:28.417Z",
+    "paymentData": {
+      "amount": 0,
+      "provisionAmount": 0,
+      "transactionId": "TXN_1758564028417",
+      "paidAt": "2025-09-22T18:00:28.417Z"
+    },
+    "updatedAt": "2025-09-22T18:00:28.695Z"
+  }
+}
