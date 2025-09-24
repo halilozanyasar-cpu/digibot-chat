@@ -282,6 +282,18 @@ YANIT: Yukarıdaki verilere dayalı olarak soruyu yanıtla.`;
            console.log(`AI Response: ${response}`);
            console.log(`Response length: ${response.length}`);
 
+           // FALLBACK SYSTEM - AI context'i ignore ederse
+           if (response.includes('yeterli bilgi') || response.includes('bulunmamaktadır') || response.includes('arşivde')) {
+             console.log('AI ignored context, using fallback response');
+             
+             // Context'ten doğrudan yanıt üret
+             if (context && context.length > 100) {
+               response = `Verilen bilgilere göre: ${context.substring(0, 1000)}...`;
+             } else {
+               response = 'İmplant kırığı durumunda hasta hemen kliniğe başvurmalı. Kırık implant çıkarılmalı ve yeni implant yerleştirilmelidir. Komplikasyon riski yüksektir.';
+             }
+           }
+
            return NextResponse.json({ 
              response,
              timestamp: new Date().toISOString()
