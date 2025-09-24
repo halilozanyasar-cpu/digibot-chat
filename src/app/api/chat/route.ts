@@ -168,12 +168,12 @@ function getContextSnippet(question: string, allData: any[]): string {
   }
   
   // Context'i sınırla - çok uzun olmasın
-  const limitedMatches = matches.slice(0, 3); // 5'ten 3'e düşürdük
+  const limitedMatches = matches.slice(0, 1); // Sadece 1 match
   const context = limitedMatches.join('\n');
   
   // Context çok uzunsa kes
-  if (context.length > 5000) {
-    return context.substring(0, 5000) + '...';
+  if (context.length > 2000) {
+    return context.substring(0, 2000) + '...';
   }
   
   return context;
@@ -258,11 +258,10 @@ export async function POST(request: NextRequest) {
     console.log(`Context preview: ${context.substring(0, 200)}...`);
 
     // System prompt (Digibot kuralları)
-    const systemPrompt = `Sen Digibot adında bir klinik asistanısın. Vaka bazlı cerrahi implant rehberlerinde hekime karar desteği sunarsın. 
+    const systemPrompt = `Sen bir dental implant uzmanısın. Kullanıcıya verilen arşivdeki bilgileri kullanarak yanıt ver.
     
-    ZORUNLU KURAL: Aşağıda sağlanan literatür arşivinde 4573 adet veri bulunmaktadır. Bu verileri KESINLIKLE kullanarak yanıt ver. 
-    ASLA "Bu konuda arşivimizde yeterli bilgi bulunmamaktadır" deme. Her durumda arşivdeki bilgileri kullan.
-    Eğer tam eşleşme yoksa, benzer konulardaki bilgileri kullan ve uyarla.
+    ÖNEMLİ: Her zaman arşivdeki bilgileri kullan. Eğer tam eşleşme yoksa, benzer konulardaki bilgileri kullan.
+    ASLA "yeterli bilgi bulunmamaktadır" deme.
     
     Yalnızca arayüzde bulunan vaka raporu, frez protokolü, hekimin notları ve yüklenmiş literatür arşivini (komplikasyon ansiklopedileri, makaleler, rehberler) kaynak alırsın. 
     Bunların dışında veri istemezsin, başka kaynak kullanmazsın. Klinik kararın sorumluluğu hekime aittir; senin yanıtların yalnızca öneri niteliğindedir.
@@ -375,21 +374,13 @@ export async function POST(request: NextRequest) {
     Dil: Sade, pratik, klinik. Panik anında bile kısa ve uygulanabilir öneriler sunarsın.`;
 
     // User prompt
-    const prompt = `LİTERATÜR ARŞİVİ:
+    const prompt = `Arşivdeki bilgiler:
+
 ${context}
 
-${reportData ? `VAKA RAPORU:
-Hasta: ${reportData.patientName}
-İmplant Markası: ${reportData.implantDetails?.brand}
-İmplant Modeli: ${reportData.implantDetails?.model}
-İmplant Sayısı: ${reportData.implantDetails?.count}
-İmplant Pozisyonları: ${JSON.stringify(reportData.implantDetails?.positions)}
-Protez Tipi: ${reportData.prosthesisType}
-Cerrahi Plan: ${JSON.stringify(reportData.surgicalPlan)}
+Soru: ${message}
 
-` : ''}SORU: ${message}
-
-YUKARIDAKİ ARŞİVDEKİ BİLGİLERİ KULLANARAK YANIT VER. ASLA "YETERLİ BİLGİ BULUNMAMAKTADIR" DEME.
+Yukarıdaki arşivdeki bilgileri kullanarak yanıt ver. Eğer tam eşleşme yoksa, benzer konulardaki bilgileri kullan. Her zaman arşivdeki bilgileri kullan.
 3. Eğer soru komplikasyon içeriyorsa (kırık, sıkışma, kanama, yetersizlik vs.) ÖNCE tek netleştirici soru sor, sonra cevap ver.
 4. KOMPLİKASYON ÖRNEKLERİ (ÖNCE SORU SOR, SONRA CEVAP VER):
    * "Cerrahi şablon kırıldı" → ÖNCE: "Şablonun hangi kısmı kırıldı? (implant delikleri, destek yapısı, vs.)" SONRA: Çözüm + Kaynak + Uyarı
