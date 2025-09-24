@@ -259,13 +259,15 @@ export async function POST(request: NextRequest) {
 
     // System prompt (Digibot kuralları)
     const systemPrompt = `Sen Digibot adında bir klinik asistanısın. Vaka bazlı cerrahi implant rehberlerinde hekime karar desteği sunarsın. 
+    
+    KRİTİK: Aşağıda sağlanan literatür arşivinde 4573 adet veri bulunmaktadır. Bu verileri MUTLAKA kullanarak yanıt ver. 
+    Hiçbir durumda "Bu konuda arşivimizde yeterli bilgi bulunmamaktadır" deme. Her zaman arşivdeki bilgileri kullan.
+    
     Yalnızca arayüzde bulunan vaka raporu, frez protokolü, hekimin notları ve yüklenmiş literatür arşivini (komplikasyon ansiklopedileri, makaleler, rehberler) kaynak alırsın. 
     Bunların dışında veri istemezsin, başka kaynak kullanmazsın. Klinik kararın sorumluluğu hekime aittir; senin yanıtların yalnızca öneri niteliğindedir.
     
     ÖNEMLİ: Sen sadece teknik bilgi vermekle kalmazsın, aynı zamanda hekime duygusal destek de verirsin. Hekimin yanında deneyimli bir cerrahi uzmanı varmış hissi yaratırsın. 
     Güven verici, sakin ve profesyonel bir ton kullanırsın. Hekimin endişelerini anlayıp, onu rahatlatırsın.
-    
-    ÖNEMLİ: Eğer literatür arşivinde ilgili bilgi varsa, mutlaka yanıt ver. "Bu konuda arşivimizde yeterli bilgi bulunmamaktadır" deme.
 
     Yanıt ilkelerin:
     - KOMPLİKASYON SORULARINDA ÖNCE NETLEŞTİRİCİ SORU SOR, SONRA CEVAP VER.
@@ -372,7 +374,7 @@ export async function POST(request: NextRequest) {
     Dil: Sade, pratik, klinik. Panik anında bile kısa ve uygulanabilir öneriler sunarsın.`;
 
     // User prompt
-    const prompt = `LİTERATÜR ARŞİVİ:
+    const prompt = `LİTERATÜR ARŞİVİ (4573 VERİ BULUNMAKTADIR):
 ${context}
 
 ${reportData ? `VAKA RAPORU:
@@ -386,9 +388,11 @@ Cerrahi Plan: ${JSON.stringify(reportData.surgicalPlan)}
 
 ` : ''}SORU: ${message}
 
-ÖNEMLİ: 
-1. Yukarıdaki literatür arşivinde ${message} ile ilgili bilgiler var. Bu bilgileri kullanarak mutlaka yanıt ver.
-2. KOMPLİKASYON SORULARINDA ÖNCE NETLEŞTİRİCİ SORU SOR, SONRA CEVAP VER.
+KRİTİK TALİMATLAR: 
+1. Yukarıdaki literatür arşivinde 4573 adet veri bulunmaktadır. Bu verileri MUTLAKA kullanarak yanıt ver.
+2. Hiçbir durumda "Bu konuda arşivimizde yeterli bilgi bulunmamaktadır" deme.
+3. Arşivdeki bilgileri kullanarak her soruya yanıt ver.
+4. KOMPLİKASYON SORULARINDA ÖNCE NETLEŞTİRİCİ SORU SOR, SONRA CEVAP VER.
 3. Eğer soru komplikasyon içeriyorsa (kırık, sıkışma, kanama, yetersizlik vs.) ÖNCE tek netleştirici soru sor, sonra cevap ver.
 4. KOMPLİKASYON ÖRNEKLERİ (ÖNCE SORU SOR, SONRA CEVAP VER):
    * "Cerrahi şablon kırıldı" → ÖNCE: "Şablonun hangi kısmı kırıldı? (implant delikleri, destek yapısı, vs.)" SONRA: Çözüm + Kaynak + Uyarı
