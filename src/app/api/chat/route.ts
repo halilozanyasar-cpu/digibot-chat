@@ -51,27 +51,27 @@ function loadAllData(): any[] {
         
         const data = JSON.parse(cleanContent);
         
-        // Her JSON dosyası için format dönüşümü
+        // Her JSON dosyası için format dönüşümü - çift dil desteği
         const formatData = (item: any) => {
           if (typeof item === 'object' && item !== null) {
             const formatted: any = {};
             for (const [key, value] of Object.entries(item)) {
-              // Anahtar kelimeleri Türkçe'ye çevir
-              let newKey = key;
-              if (key === 'Title') newKey = 'Başlık';
-              else if (key === 'Content') newKey = 'İçerik';
-              else if (key === 'Authors') newKey = 'Yazarlar';
-              else if (key === 'Journal') newKey = 'Dergi';
-              else if (key === 'Year') newKey = 'Yıl';
-              else if (key === 'Study Type') newKey = 'Çalışma Tipi';
-              else if (key === 'Sample Size') newKey = 'Örnek Boyutu';
-              else if (key === 'Main Outcome') newKey = 'Ana Bulgular';
-              else if (key === 'Conclusion') newKey = 'Sonuç';
-              else if (key === 'Firma') newKey = 'Firma';
-              else if (key === 'Sistem') newKey = 'Sistem';
-              else if (key === 'Drill') newKey = 'Frez';
+              // Hem Türkçe hem İngilizce anahtar kelimeler
+              formatted[key] = value; // Orijinal İngilizce
               
-              formatted[newKey] = value;
+              // Türkçe çeviri de ekle
+              if (key === 'Title') formatted['Başlık'] = value;
+              else if (key === 'Content') formatted['İçerik'] = value;
+              else if (key === 'Authors') formatted['Yazarlar'] = value;
+              else if (key === 'Journal') formatted['Dergi'] = value;
+              else if (key === 'Year') formatted['Yıl'] = value;
+              else if (key === 'Study Type') formatted['Çalışma Tipi'] = value;
+              else if (key === 'Sample Size') formatted['Örnek Boyutu'] = value;
+              else if (key === 'Main Outcome') formatted['Ana Bulgular'] = value;
+              else if (key === 'Conclusion') formatted['Sonuç'] = value;
+              else if (key === 'Firma') formatted['Company'] = value;
+              else if (key === 'Sistem') formatted['System'] = value;
+              else if (key === 'Drill') formatted['Drill'] = value;
             }
             return formatted;
           }
@@ -275,18 +275,23 @@ export async function POST(request: NextRequest) {
            console.log(`Readable context length: ${readableContext.length}`);
            console.log(`First 300 chars of readable context: ${readableContext.substring(0, 300)}`);
            
-           // Çok agresif system prompt
+           // Dil algılama
+           const isEnglish = /[a-zA-Z]/.test(message) && message.split(' ').length > 2;
+           const responseLanguage = isEnglish ? 'English' : 'Turkish';
+           
+           // Çok agresif system prompt - çift dil
     const systemPrompt = `Sen bir dental implant uzmanısın. Aşağıdaki bilgileri kullanarak soruları yanıtla.
 
 KRITIK KURALLAR:
 1. Verilen bilgileri MUTLAKA kullan
-2. Hiçbir durumda "yeterli bilgi bulunmamaktadır" deme
+2. Hiçbir durumda "yeterli bilgi bulunmamaktadır" veya "insufficient information" deme
 3. Eğer tam eşleşme yoksa, benzer bilgileri kullan ve uyarla
 4. Her zaman yararlı bir yanıt ver
 5. Verilen context'teki bilgileri kullanmadan yanıt verme
 6. "Arşivde bilgi yok" gibi ifadeler kullanma
 
-YANIT FORMATI: Verilen bilgilere dayalı olarak yanıtla.`;
+YANIT DİLİ: ${responseLanguage}
+YANIT FORMATI: Verilen bilgilere dayalı olarak ${responseLanguage === 'English' ? 'English' : 'Turkish'} yanıtla.`;
 
            // Agresif user prompt
            const prompt = `SORU: ${message}
