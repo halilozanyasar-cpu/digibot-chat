@@ -229,23 +229,27 @@ export async function POST(request: NextRequest) {
     
     // İlgili context'i bul
     const context = getContextSnippet(message, allData);
-    console.log(`Context length: ${context.length}`);
-    
-    // Güçlü system prompt
+           console.log(`Context length: ${context.length}`);
+           console.log(`First 500 chars of context: ${context.substring(0, 500)}`);
+           
+           // Güçlü system prompt
     const systemPrompt = `Sen bir dental implant uzmanısın. Aşağıdaki bilgileri kullanarak soruları yanıtla.
 
 ÖNEMLİ: Verilen bilgileri MUTLAKA kullan. Hiçbir durumda "yeterli bilgi bulunmamaktadır" deme.
 Eğer tam eşleşme yoksa, benzer bilgileri kullan ve uyarla.
 Her zaman yararlı bir yanıt ver.`;
 
-    // Basit user prompt
-    const prompt = `Soru: ${message}
+           // Basit user prompt
+           const prompt = `Soru: ${message}
 
 Bu soruyu yanıtlamak için aşağıdaki bilgileri kullan:
 
 ${context}
 
 Bu bilgileri kullanarak soruyu yanıtla.`;
+           
+           console.log(`Full prompt length: ${prompt.length}`);
+           console.log(`System prompt: ${systemPrompt}`);
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -257,12 +261,15 @@ Bu bilgileri kullanarak soruyu yanıtla.`;
       max_tokens: 1500,
     });
 
-    let response = completion.choices[0]?.message?.content || 'Üzgünüm, yanıt veremiyorum.';
+           let response = completion.choices[0]?.message?.content || 'Üzgünüm, yanıt veremiyorum.';
+           
+           console.log(`AI Response: ${response}`);
+           console.log(`Response length: ${response.length}`);
 
-    return NextResponse.json({ 
-      response,
-      timestamp: new Date().toISOString()
-    });
+           return NextResponse.json({ 
+             response,
+             timestamp: new Date().toISOString()
+           });
 
   } catch (error) {
     console.error('Chat API Error:', error);
