@@ -22,7 +22,7 @@ def estimate_cost(input_tokens, output_tokens, model="gpt-4o-mini"):
     cost = (input_tokens / 1000) * p["input"] + (output_tokens / 1000) * p["output"]
     return round(cost, 6)
 
-# --- JSON verilerini yükle ---
+# --- JSON verilerini yükle - Mock verileri hariç tut ---
 def load_all_data():
     combined = []
     data_folder = "data"
@@ -33,18 +33,33 @@ def load_all_data():
     print(f"Files in data folder: {os.listdir(data_folder)}")
     
     for filename in os.listdir(data_folder):
-        if filename.endswith(".json"):
+        # Mock verileri hariç tut
+        if (filename.endswith(".json") and 
+            not filename.startswith("mock") and 
+            not filename.startswith("test") and
+            "mock" not in filename.lower() and
+            "test" not in filename.lower()):
             try:
                 filepath = os.path.join(data_folder, filename)
                 print(f"Loading file: {filename}")
                 with open(filepath, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    if isinstance(data, list):
-                        combined.extend(data)
-                        print(f"Added {len(data)} entries from {filename}")
+                    
+                    # Mock veri içeriğini kontrol et
+                    data_str = json.dumps(data, ensure_ascii=False).lower()
+                    is_mock_data = ("mock" in data_str or 
+                                  "test" in data_str or
+                                  any(item.get("_id", "").startswith("mock") for item in (data if isinstance(data, list) else [data])))
+                    
+                    if not is_mock_data:
+                        if isinstance(data, list):
+                            combined.extend(data)
+                            print(f"Added {len(data)} entries from {filename}")
+                        else:
+                            combined.append(data)
+                            print(f"Added 1 entry from {filename}")
                     else:
-                        combined.append(data)
-                        print(f"Added 1 entry from {filename}")
+                        print(f"Skipped mock data file: {filename}")
             except Exception as e:
                 print(f"Error loading {filename}: {e}")
                 continue
