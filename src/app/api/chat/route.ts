@@ -232,21 +232,31 @@ export async function POST(request: NextRequest) {
            console.log(`Context length: ${context.length}`);
            console.log(`First 500 chars of context: ${context.substring(0, 500)}`);
            
-           // Context'i AI için daha anlaşılır hale getir
+           // Context'i AI için tamamen okunabilir hale getir
            const readableContext = context ? 
-             context.replace(/[{}"]/g, ' ')
+             context.replace(/\{/g, '')
+                   .replace(/\}/g, '')
+                   .replace(/"/g, '')
+                   .replace(/Title/g, '\nBaşlık')
+                   .replace(/Content/g, '\nİçerik')
+                   .replace(/Authors/g, '\nYazarlar')
+                   .replace(/Journal/g, '\nDergi')
+                   .replace(/Year/g, '\nYıl')
+                   .replace(/Study Type/g, '\nÇalışma Tipi')
+                   .replace(/Sample Size/g, '\nÖrnek Boyutu')
+                   .replace(/Main Outcome/g, '\nAna Bulgular')
+                   .replace(/Conclusion/g, '\nSonuç')
+                   .replace(/Firma/g, '\nFirma')
+                   .replace(/Sistem/g, '\nSistem')
+                   .replace(/Drill/g, '\nFrez')
                    .replace(/:/g, ': ')
-                   .replace(/,/g, ', ')
-                   .replace(/Title/g, 'Başlık')
-                   .replace(/Content/g, 'İçerik')
-                   .replace(/Authors/g, 'Yazarlar')
-                   .replace(/Journal/g, 'Dergi')
-                   .replace(/Year/g, 'Yıl')
-                   .replace(/Study Type/g, 'Çalışma Tipi')
-                   .replace(/Sample Size/g, 'Örnek Boyutu')
-                   .replace(/Main Outcome/g, 'Ana Bulgular')
-                   .replace(/Conclusion/g, 'Sonuç')
+                   .replace(/,/g, '\n')
+                   .replace(/\n\s*\n/g, '\n')
+                   .trim()
                    .substring(0, 4000) : '';
+           
+           console.log(`Readable context length: ${readableContext.length}`);
+           console.log(`First 300 chars of readable context: ${readableContext.substring(0, 300)}`);
            
            // Çok agresif system prompt
     const systemPrompt = `Sen bir dental implant uzmanısın. Aşağıdaki bilgileri kullanarak soruları yanıtla.
