@@ -1,0 +1,88 @@
+{
+  "dental_guides": [
+    {
+      "id": 1,
+      "title": "Dijital Cerrahi Rehber Tasarımı",
+      "description": "3D tomografi ve ağız içi tarama verilerinizden hassas cerrahi rehberler tasarlıyoruz",
+      "price": 500,
+      "features": ["3D implant planlama", "Hassas pozisyonlama", "Çene anatomisi analizi", "Protez uyumluluğu kontrolü"],
+      "delivery_time": "2-3 iş günü",
+      "requirements": ["3D tomografi (DICOM)", "Ağız içi tarama (STL)", "Hasta bilgileri"]
+    },
+    {
+      "id": 2,
+      "title": "QR Kodlu Rapor Sistemi",
+      "description": "Her cerrahi rehber için benzersiz QR kod ile detaylı raporlama sistemi",
+      "price": 0,
+      "features": ["Benzersiz QR kod", "Detaylı vaka raporu", "Mobil erişim", "Güvenli veri saklama"],
+      "delivery_time": "Anında",
+      "requirements": ["Tamamlanmış cerrahi rehber"]
+    }
+  ],
+  "pricing_plans": [
+    {
+      "name": "Başlangıç",
+      "price": 500,
+      "period": "rehber başına",
+      "description": "Küçük klinikler için ideal",
+      "features": [
+        "Dijital cerrahi rehber tasarımı",
+        "QR kodlu rapor sistemi",
+        "Temel destek",
+        "5 rehber/ay limit"
+      ]
+    },
+    {
+      "name": "Profesyonel",
+      "price": 1500,
+      "period": "aylık",
+      "description": "Orta ölçekli klinikler için",
+      "features": [
+        "Sınırsız rehber tasarımı",
+        "QR kodlu rapor sistemi",
+        "AI cerrahi asistan",
+        "Öncelikli destek",
+        "Mobil uygulama"
+      ]
+    },
+    {
+      "name": "Kurumsal",
+      "price": 3000,
+      "period": "aylık",
+      "description": "Büyük klinikler ve hastaneler için",
+      "features": [
+        "Sınırsız rehber tasarımı",
+        "QR kodlu rapor sistemi",
+        "AI cerrahi asistan",
+        "24/7 destek",
+        "Mobil uygulama",
+        "API erişimi",
+        "Özel entegrasyonlar"
+      ]
+    }
+  ],
+  "faq": [
+    {
+      "question": "Cerrahi rehber ne kadar sürede hazırlanır?",
+      "answer": "Standart rehberler 2-3 iş günü içinde hazırlanır. Acil durumlar için express hizmet mevcuttur."
+    },
+    {
+      "question": "Hangi dosya formatlarını kabul ediyorsunuz?",
+      "answer": "3D tomografi için DICOM, ağız içi tarama için STL formatını kabul ediyoruz."
+    },
+    {
+      "question": "QR kod sistemi nasıl çalışır?",
+      "answer": "Her rehber için benzersiz QR kod oluşturulur. QR kod tarandığında detaylı vaka raporuna erişim sağlanır."
+    },
+    {
+      "question": "AI cerrahi asistan nasıl çalışır?",
+      "answer": "AI asistan, literatür veritabanımızı kullanarak implant planlaması, teknik öneriler ve komplikasyon yönetimi konularında yardımcı olur."
+    }
+  ],
+  "contact_info": {
+    "phone": "+90 (212) 555 0123",
+    "email": "info@digimplantsolutions.com",
+    "address": "Maslak Mahallesi, Büyükdere Caddesi No: 123, Sarıyer/İstanbul",
+    "working_hours": "Pazartesi-Cuma 09:00-18:00"
+  }
+}
