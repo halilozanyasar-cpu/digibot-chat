@@ -201,10 +201,10 @@ function getContextSnippet(query: string, data: any[]): string {
   
   console.log(`Found ${matches.length} matches`);
   
-  // Context uzunluğunu sınırla
+  // Context uzunluğunu sınırla - daha agresif
   let context = matches.join('\n\n');
-  if (context.length > 8000) {
-    context = context.substring(0, 8000) + '...';
+  if (context.length > 5000) {
+    context = context.substring(0, 5000) + '...';
   }
   
   return context;
