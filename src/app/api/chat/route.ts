@@ -227,10 +227,13 @@ export async function POST(request: NextRequest) {
     const allData = loadAllData();
     console.log(`Loaded ${allData.length} total entries`);
     
-    // İlgili context'i bul
-    const context = getContextSnippet(message, allData);
+           // İlgili context'i bul
+           const context = getContextSnippet(message, allData);
            console.log(`Context length: ${context.length}`);
            console.log(`First 500 chars of context: ${context.substring(0, 500)}`);
+           
+           // HARDCODED TEST - AI'yi zorla
+           const testContext = `{"Title": "İmplant Kırığı", "Content": "İmplant kırığı durumunda hasta hemen kliniğe başvurmalı. Kırık implant çıkarılmalı ve yeni implant yerleştirilmelidir. Komplikasyon riski yüksektir."}`;
            
            // Çok agresif system prompt
     const systemPrompt = `Sen bir dental implant uzmanısın. Aşağıdaki bilgileri kullanarak soruları yanıtla.
@@ -254,7 +257,7 @@ YANITLAMA KURALLARI:
 - Verilen context'ten yanıt ver
 
 VERİLER:
-${context}
+${testContext}
 
 YANIT: Yukarıdaki verilere dayalı olarak soruyu yanıtla.`;
            
