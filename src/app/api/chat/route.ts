@@ -230,16 +230,19 @@ export async function POST(request: NextRequest) {
     console.log(`Relevant context length: ${relevantContext.length}`);
     console.log(`Context preview: ${relevantContext.substring(0, 500)}...`);
     
-    // Context'i sınırla
-    const simpleContext = relevantContext.length > 0 ? relevantContext.substring(0, 4000) : 'No relevant data found';
+    // Context'i sınırla - daha büyük context
+    const simpleContext = relevantContext.length > 0 ? relevantContext.substring(0, 8000) : 'No relevant data found';
     console.log(`Final context: ${simpleContext.substring(0, 200)}...`);
 
-    // System prompt - Çok agresif
+    // System prompt - Çok güçlü
     const systemPrompt = `Sen bir dental implant uzmanısın. Aşağıdaki bilgileri kullanarak soruları yanıtla.
 
-KRİTİK: Aşağıda verilen bilgileri MUTLAKA kullan. Hiçbir durumda "yeterli bilgi bulunmamaktadır" veya "arşivimizde yeterli bilgi" deme.
-Eğer tam eşleşme yoksa, benzer bilgileri kullan ve uyarla.
-Eğer bilgi yoksa, genel implant kırılması protokolünü ver.
+ÖNEMLİ KURALLAR:
+1. Aşağıdaki bilgileri MUTLAKA kullan
+2. Hiçbir durumda "yeterli bilgi bulunmamaktadır" deme
+3. Eğer tam eşleşme yoksa, benzer bilgileri kullan
+4. Eğer bilgi yoksa, genel protokolü ver
+5. Her zaman yararlı bir yanıt ver
 
 Yanıt formatı:
 [Çözüm önerisi]
@@ -273,89 +276,6 @@ BU BİLGİLERİ KULLANARAK SORUYU YANITLA. ASLA "YETERLİ BİLGİ BULUNMAMAKTADI
     });
 
     let response = completion.choices[0]?.message?.content || 'Üzgünüm, yanıt veremiyorum.';
-    
-    // Eğer AI hala "yeterli bilgi bulunmamaktadır" derse, fallback yanıt ver
-    if (response.includes('yeterli bilgi bulunmamaktadır') || response.includes('yeterince bilgi') || response.includes('arşivimizde yeterli')) {
-      const messageLower = message.toLowerCase();
-      
-      if (messageLower.includes('kırıl') || messageLower.includes('kırık') || messageLower.includes('fracture')) {
-        response = `İmplant kırılması durumunda yapılması gerekenler:
-
-1. **Acil Müdahale**: Hasta sakinleştirilir, ağrı kontrolü sağlanır
-2. **Görüntüleme**: Radyografik değerlendirme yapılır (kırığın boyutu ve konumu)
-3. **Kırık Tipi Belirleme**: 
-   - Kırık implant gövdesinde ise: İmplant çıkarılır, kemik grefti uygulanır
-   - Kırık implant boynunda ise: Abutment değiştirilebilir
-4. **Cerrahi Müdahale**: Kırık implant çıkarılır, yeni implant yerleştirilir
-5. **Takip**: İyileşme süreci izlenir
-
-**Kaynak:**
-Literatür Arşivi - İmplant Komplikasyonları ve Yönetimi
-
-**Uyarı:**
-Bu yalnızca öneridir, klinik ve yasal sorumluluk hekime aittir.`;
-      } else if (messageLower.includes('sıkış') || messageLower.includes('stuck')) {
-        response = `İmplant sıkışması durumunda yapılması gerekenler:
-
-1. **Durum Değerlendirmesi**: Sıkışmanın nedeni belirlenir (kemik yoğunluğu, osteotomi boyutu)
-2. **Osteotomi Genişletme**: Daha büyük frez ile osteotomi genişletilir
-3. **Kemik Kondensasyonu**: Osteotomi kullanarak kemik yoğunluğu azaltılır
-4. **Alternatif Yöntemler**: 
-   - Tapping (vida açma) yapılır
-   - İmplant tasarımı değiştirilir
-   - Farklı implant sistemi kullanılır
-
-**Kaynak:**
-Literatür Arşivi - İmplant Yerleştirme Teknikleri
-
-**Uyarı:**
-Bu yalnızca öneridir, klinik ve yasal sorumluluk hekime aittir.`;
-      } else if (messageLower.includes('kanama') || messageLower.includes('bleeding')) {
-        response = `İmplant cerrahisinde kanama kontrolü:
-
-1. **Lokal Hemostaz**: Steril gazlı bez ile basınç uygulanır
-2. **Hemostatik Ajanlar**: Fibrin glue, kollajen matriks kullanılır
-3. **Vasküler Kontrol**: Kanayan damar koterize edilir
-4. **Sutur Teknikleri**: Dikiş ile hemostaz sağlanır
-5. **Takip**: Kanama durumu izlenir
-
-**Kaynak:**
-Literatür Arşivi - Cerrahi Hemostaz Teknikleri
-
-**Uyarı:**
-Bu yalnızca öneridir, klinik ve yasal sorumluluk hekime aittir.`;
-      } else if (messageLower.includes('frez') || messageLower.includes('drill') || messageLower.includes('protokol')) {
-        response = `İmplant frez protokolü genel prensipleri:
-
-1. **Pilot Drill**: 2.0-2.2mm çap, 800 RPM
-2. **Sequential Drilling**: İmplant çapına göre kademeli genişletme
-3. **Irrigasyon**: External irrigasyon mutlaka kullanılır
-4. **Kemik Tipi**: D1-D4 kemik tiplerine göre protokol değişir
-5. **Final Drill**: İmplant çapından 0.5mm küçük
-
-**Kaynak:**
-Literatür Arşivi - İmplant Frez Protokolleri
-
-**Uyarı:**
-Bu yalnızca öneridir, klinik ve yasal sorumluluk hekime aittir.`;
-      } else {
-        response = `Arşivimizdeki bilgilere göre size yardımcı olabilirim:
-
-- **İmplant komplikasyonları** (kırılma, sıkışma, kanama)
-- **Frez protokolleri** (Nobel, Straumann, ITI)
-- **Kemik kalitesi değerlendirmesi** (D1, D2, D3, D4)
-- **Cerrahi teknikler ve planlama**
-- **İmplant yerleştirme protokolleri**
-
-Lütfen daha spesifik bir soru sorun (örn: "Nobel D2 kemik frez protokolü", "İmplant kırılması tedavisi").
-
-**Kaynak:**
-Literatür Arşivi - 4824 veri girişi
-
-**Uyarı:**
-Bu yalnızca öneridir, klinik ve yasal sorumluluk hekime aittir.`;
-      }
-    }
 
     // Maliyet hesaplama & loglama
     const usage = completion.usage;
