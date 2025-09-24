@@ -220,6 +220,32 @@ export async function POST(request: NextRequest) {
     const allData = loadAllData();
     console.log(`Loaded ${allData.length} data entries`);
     
+    // Debug: Veri içeriğini kontrol et
+    if (allData.length === 0) {
+      console.log('❌ NO DATA LOADED - Checking paths...');
+      const testPaths = [
+        path.join(process.cwd(), 'public', 'data'),
+        path.join(process.cwd(), 'src', 'data'),
+        path.join(process.cwd(), 'data')
+      ];
+      
+      for (const testPath of testPaths) {
+        console.log(`Testing path: ${testPath}`);
+        console.log(`Exists: ${fs.existsSync(testPath)}`);
+        if (fs.existsSync(testPath)) {
+          try {
+            const files = fs.readdirSync(testPath);
+            console.log(`Files in ${testPath}:`, files);
+          } catch (error) {
+            console.log(`Error reading ${testPath}:`, error);
+          }
+        }
+      }
+    } else {
+      console.log('✅ DATA LOADED SUCCESSFULLY');
+      console.log('Sample data:', JSON.stringify(allData[0], null, 2));
+    }
+    
     // Rapor verilerini yükle (eğer reportId varsa)
     let reportData = null;
     if (reportId) {
