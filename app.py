@@ -185,6 +185,8 @@ def index():
         - Nobel implant frez protokolleri için spesifik frez önerileri ver
         - Kemik yoğunluğuna göre (D1, D2, D3, D4) frez seçimi yap
         - Frez çapı ve sırası hakkında detaylı bilgi ver
+        - Nobel 4.3 mm implant için D3 kemik: 2.0 mm pilot → 3.2 mm final drill
+        - D3 kemikte undersized bırakılır (3.2 mm final drill kullanılır)
         - Duygusal destek ver, güven verici ol, hekimi sakinleştir."""
 
         response = openai.ChatCompletion.create(
