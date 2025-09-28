@@ -102,7 +102,7 @@ def get_context_snippet(question):
     print(f"Searching for: {question_words}")
     
     # Daha geniş arama yap - tüm implant markaları ve frez protokolleri için özel terimler ekle
-    search_terms = question_words + ["implant", "kırık", "fracture", "complication", "problem", "nobel", "straumann", "anthogyr", "astra", "megagen", "neodent", "iti", "misch", "broken", "crack", "frez", "drill", "protokol", "protocol", "d1", "d2", "d3", "d4", "kemik", "bone", "density", "3.0", "3.5", "4.0", "4.3", "4.8", "5.0", "5.5", "6.0"]
+    search_terms = question_words + ["implant", "kırık", "fracture", "complication", "problem", "nobel", "straumann", "anthogyr", "astra", "megagen", "neodent", "implantswiss", "nucleoss", "medentika", "iti", "misch", "broken", "crack", "frez", "drill", "protokol", "protocol", "d1", "d2", "d3", "d4", "kemik", "bone", "density", "3.0", "3.5", "4.0", "4.3", "4.8", "5.0", "5.5", "6.0"]
     
     for i, entry in enumerate(all_data):
         try:
@@ -182,7 +182,7 @@ def index():
         
         FREZ PROTOKOLLERİ İÇİN ÖZEL KURALLAR:
         - Frez protokolleri sorularında MUTLAKA "İmplant Drill Bilgileri" dosyasından bilgi kullan
-        - TÜM implant markaları için frez protokolleri ver (Nobel, Straumann, Anthogyr, Astra Tech, Megagen, Neodent, vs.)
+        - TÜM implant markaları için frez protokolleri ver (Nobel, Straumann, Anthogyr, Astra Tech, Megagen, Neodent, ImplantSwiss, NucleOSS, Medentika, vs.)
         - TÜM implant çapları için protokol ver (3.0, 3.5, 4.0, 4.3, 4.8, 5.0, 5.5, 6.0 mm)
         - Kemik yoğunluğuna göre (D1, D2, D3, D4) frez seçimi yap
         - Frez çapı, sırası, RPM, irrigasyon hakkında detaylı bilgi ver
