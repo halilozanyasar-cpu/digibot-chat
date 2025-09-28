@@ -101,8 +101,8 @@ def get_context_snippet(question):
     
     print(f"Searching for: {question_words}")
     
-    # Daha geniş arama yap
-    search_terms = question_words + ["implant", "kırık", "fracture", "complication", "problem", "nobel", "iti", "misch", "broken", "crack"]
+    # Daha geniş arama yap - frez protokolleri için özel terimler ekle
+    search_terms = question_words + ["implant", "kırık", "fracture", "complication", "problem", "nobel", "iti", "misch", "broken", "crack", "frez", "drill", "protokol", "protocol", "d3", "kemik", "bone", "density"]
     
     for i, entry in enumerate(all_data):
         try:
@@ -178,7 +178,14 @@ def index():
 
         SORU: {user_question}
 
-        Yukarıdaki literatür arşivinden sadece ilgili bilgileri kullanarak yanıt ver. Duygusal destek ver, güven verici ol, hekimi sakinleştir."""
+        Yukarıdaki literatür arşivinden sadece ilgili bilgileri kullanarak yanıt ver. 
+        
+        FREZ PROTOKOLLERİ İÇİN ÖZEL KURALLAR:
+        - Frez protokolleri sorularında MUTLAKA "İmplant Drill Bilgileri" dosyasından bilgi kullan
+        - Nobel implant frez protokolleri için spesifik frez önerileri ver
+        - Kemik yoğunluğuna göre (D1, D2, D3, D4) frez seçimi yap
+        - Frez çapı ve sırası hakkında detaylı bilgi ver
+        - Duygusal destek ver, güven verici ol, hekimi sakinleştir."""
 
         response = openai.ChatCompletion.create(
             model="gpt-4o-mini",
