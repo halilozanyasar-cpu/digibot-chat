@@ -101,8 +101,8 @@ def get_context_snippet(question):
     
     print(f"Searching for: {question_words}")
     
-    # Daha geniş arama yap - frez protokolleri için özel terimler ekle
-    search_terms = question_words + ["implant", "kırık", "fracture", "complication", "problem", "nobel", "iti", "misch", "broken", "crack", "frez", "drill", "protokol", "protocol", "d3", "kemik", "bone", "density"]
+    # Daha geniş arama yap - tüm implant markaları ve frez protokolleri için özel terimler ekle
+    search_terms = question_words + ["implant", "kırık", "fracture", "complication", "problem", "nobel", "straumann", "anthogyr", "astra", "megagen", "neodent", "iti", "misch", "broken", "crack", "frez", "drill", "protokol", "protocol", "d1", "d2", "d3", "d4", "kemik", "bone", "density", "3.0", "3.5", "4.0", "4.3", "4.8", "5.0", "5.5", "6.0"]
     
     for i, entry in enumerate(all_data):
         try:
@@ -182,11 +182,13 @@ def index():
         
         FREZ PROTOKOLLERİ İÇİN ÖZEL KURALLAR:
         - Frez protokolleri sorularında MUTLAKA "İmplant Drill Bilgileri" dosyasından bilgi kullan
-        - Nobel implant frez protokolleri için spesifik frez önerileri ver
+        - TÜM implant markaları için frez protokolleri ver (Nobel, Straumann, Anthogyr, Astra Tech, Megagen, Neodent, vs.)
+        - TÜM implant çapları için protokol ver (3.0, 3.5, 4.0, 4.3, 4.8, 5.0, 5.5, 6.0 mm)
         - Kemik yoğunluğuna göre (D1, D2, D3, D4) frez seçimi yap
-        - Frez çapı ve sırası hakkında detaylı bilgi ver
-        - Nobel 4.3 mm implant için D3 kemik: 2.0 mm pilot → 3.2 mm final drill
-        - D3 kemikte undersized bırakılır (3.2 mm final drill kullanılır)
+        - Frez çapı, sırası, RPM, irrigasyon hakkında detaylı bilgi ver
+        - Örnek: "4.0 Anthogyr D3" → Anthogyr 4.0 mm implant için D3 kemik protokolü
+        - Örnek: "3.5 Straumann D2" → Straumann 3.5 mm implant için D2 kemik protokolü
+        - Her marka için spesifik frez sistemi ve sırası belirt
         - Duygusal destek ver, güven verici ol, hekimi sakinleştir."""
 
         response = openai.ChatCompletion.create(
