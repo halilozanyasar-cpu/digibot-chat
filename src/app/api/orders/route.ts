@@ -45,12 +45,10 @@ export async function POST(request: NextRequest) {
     const implantCount = parseInt(formData.get('implantCount') as string);
     const implantPositions = JSON.parse(formData.get('implantPositions') as string);
     const prosthesisType = formData.get('prosthesisType') as string;
-    const surgicalApproach = formData.get('surgicalApproach') as string;
-    const boneQuality = formData.get('boneQuality') as string;
     const notes = formData.get('notes') as string;
 
     // Validation
-    if (!patientName || !implantBrand || !implantModel || !implantCount || !implantPositions || !prosthesisType || !surgicalApproach || !boneQuality) {
+    if (!patientName || !implantBrand || !implantModel || !implantCount || !implantPositions || !prosthesisType) {
       return NextResponse.json(
         { message: 'Tüm gerekli alanlar doldurulmalıdır' },
         { status: 400 }
@@ -98,8 +96,8 @@ export async function POST(request: NextRequest) {
       },
       prosthesisType,
       surgicalPlan: {
-        approach: surgicalApproach,
-        boneQuality: boneQuality,
+        approach: 'Belirlenecek', // Hekim tarafından belirlenecek
+        boneQuality: 'Belirlenecek', // Hekim tarafından belirlenecek
         recommendations: [],
       },
       stlFiles,
