@@ -66,7 +66,7 @@ export default function NewOrderPage() {
     formState: { errors },
   } = useForm<OrderForm>();
 
-  const implantCount = watch('implantCount') || 0;
+  const implantCount = parseInt(watch('implantCount')?.toString() || '0') || 0;
 
   const onStlDrop = (acceptedFiles: File[]) => {
     setStlFiles(prev => [...prev, ...acceptedFiles]);
@@ -98,8 +98,9 @@ export default function NewOrderPage() {
   };
 
   const onSubmit = async (data: OrderForm) => {
-    if (selectedPositions.length !== implantCount) {
-      alert('İmplant sayısı ile seçilen pozisyon sayısı eşleşmiyor.');
+    const count = parseInt(data.implantCount.toString());
+    if (selectedPositions.length !== count) {
+      alert(`İmplant sayısı (${count}) ile seçilen pozisyon sayısı (${selectedPositions.length}) eşleşmiyor.`);
       return;
     }
 
