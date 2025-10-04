@@ -22,6 +22,8 @@ interface OrderForm {
   implantCount: number;
   implantPositions: string[];
   prosthesisType: 'hibrit' | 'köprü' | 'tek_kron' | 'diğer';
+  surgicalApproach: string;
+  boneQuality: string;
   notes: string;
 }
 
@@ -114,6 +116,8 @@ export default function NewOrderPage() {
       formData.append('implantCount', data.implantCount.toString());
       formData.append('implantPositions', JSON.stringify(selectedPositions));
       formData.append('prosthesisType', data.prosthesisType);
+      formData.append('surgicalApproach', data.surgicalApproach);
+      formData.append('boneQuality', data.boneQuality);
       formData.append('notes', data.notes || '');
 
       stlFiles.forEach((file, index) => {
@@ -304,6 +308,53 @@ export default function NewOrderPage() {
                   {position}
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Surgical Plan */}
+          <div className="card">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">
+              Cerrahi Plan
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Cerrahi Yaklaşım *
+                </label>
+                <select
+                  {...register('surgicalApproach', { required: 'Cerrahi yaklaşım gereklidir' })}
+                  className="form-input"
+                >
+                  <option value="">Yaklaşım seçin</option>
+                  <option value="flapsız">Flapsız cerrahi</option>
+                  <option value="flap">Flap ile cerrahi</option>
+                  <option value="guided">Guided surgery</option>
+                  <option value="immediate">Immediate loading</option>
+                </select>
+                {errors.surgicalApproach && (
+                  <p className="mt-1 text-sm text-red-600">{errors.surgicalApproach.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Kemik Kalitesi *
+                </label>
+                <select
+                  {...register('boneQuality', { required: 'Kemik kalitesi gereklidir' })}
+                  className="form-input"
+                >
+                  <option value="">Kalite seçin</option>
+                  <option value="D1">D1 - Çok yoğun</option>
+                  <option value="D2">D2 - Yoğun</option>
+                  <option value="D3">D3 - Orta yoğunluk</option>
+                  <option value="D4">D4 - Az yoğun</option>
+                </select>
+                {errors.boneQuality && (
+                  <p className="mt-1 text-sm text-red-600">{errors.boneQuality.message}</p>
+                )}
+              </div>
             </div>
           </div>
 

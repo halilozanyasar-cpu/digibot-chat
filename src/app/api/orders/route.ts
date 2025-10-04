@@ -45,10 +45,12 @@ export async function POST(request: NextRequest) {
     const implantCount = parseInt(formData.get('implantCount') as string);
     const implantPositions = JSON.parse(formData.get('implantPositions') as string);
     const prosthesisType = formData.get('prosthesisType') as string;
+    const surgicalApproach = formData.get('surgicalApproach') as string;
+    const boneQuality = formData.get('boneQuality') as string;
     const notes = formData.get('notes') as string;
 
     // Validation
-    if (!patientName || !implantBrand || !implantModel || !implantCount || !implantPositions || !prosthesisType) {
+    if (!patientName || !implantBrand || !implantModel || !implantCount || !implantPositions || !prosthesisType || !surgicalApproach || !boneQuality) {
       return NextResponse.json(
         { message: 'Tüm gerekli alanlar doldurulmalıdır' },
         { status: 400 }
@@ -88,16 +90,23 @@ export async function POST(request: NextRequest) {
     const order = new Order({
       userId: session.user.id,
       patientName,
-      implantBrand,
-      implantModel,
-      implantCount,
-      implantPositions,
+      implantDetails: {
+        brand: implantBrand,
+        model: implantModel,
+        count: implantCount,
+        positions: implantPositions,
+      },
       prosthesisType,
+      surgicalPlan: {
+        approach: surgicalApproach,
+        boneQuality: boneQuality,
+        recommendations: [],
+      },
       stlFiles,
       dicomFiles,
       guidePrice,
       sleevePrice,
-      totalPrice,
+      totalAmount: totalPrice,
       notes,
     });
 
